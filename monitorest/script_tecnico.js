@@ -1,86 +1,61 @@
-// --- DATA: Conteúdo Programático SEDES-DF 2026 ---
+// --- DATA: Conteúdo Programático Monitorest ---
 // Banca: Quadrix · Calibrado com 47h48 de estudo registradas
 const DEFAULT_SYLLABUS = [
     { id: 'lp_01', disciplina: 'Língua Portuguesa', nome: "1. Compreensão e Interpretação de Textos", relevancia: 5, peso: 1 },
     { id: 'lp_02', disciplina: 'Língua Portuguesa', nome: "2. Tipos e Gêneros Textuais", relevancia: 3, peso: 1 },
     { id: 'lp_03', disciplina: 'Língua Portuguesa', nome: "3. Ortografia Oficial", relevancia: 3, peso: 1 },
-    { id: 'lp_04', disciplina: 'Língua Portuguesa', nome: "4. Coesão Textual (referenciação, conectores, tempos verbais)", relevancia: 5, peso: 1 },
-    { id: 'lp_05', disciplina: 'Língua Portuguesa', nome: "5.1 Classes de Palavras", relevancia: 3, peso: 1 },
-    { id: 'lp_06', disciplina: 'Língua Portuguesa', nome: "5.2/5.3 Coordenação e Subordinação", relevancia: 4, peso: 1 },
-    { id: 'lp_07', disciplina: 'Língua Portuguesa', nome: "5.4 Pontuação", relevancia: 4, peso: 1 },
-    { id: 'lp_08', disciplina: 'Língua Portuguesa', nome: "5.5/5.6 Concordância e Regência", relevancia: 4, peso: 1 },
-    { id: 'lp_09', disciplina: 'Língua Portuguesa', nome: "5.7 Crase", relevancia: 4, peso: 1 },
-    { id: 'lp_10', disciplina: 'Língua Portuguesa', nome: "5.8 Colocação Pronominal", relevancia: 2, peso: 1 },
-    { id: 'lp_11', disciplina: 'Língua Portuguesa', nome: "6. Reescrita, Significação e Reorganização", relevancia: 5, peso: 1 },
-    { id: 'df_01', disciplina: 'Conhecimentos do DF e Legislação', nome: "1. Realidade DF/RIDE (étnica, social, histórica, geográfica, econômica)", relevancia: 2, peso: 2 },
+    { id: 'lp_04', disciplina: 'Língua Portuguesa', nome: "4.1 Coesão: referenciação, conectores, sequenciação", relevancia: 5, peso: 1 },
+    { id: 'lp_05', disciplina: 'Língua Portuguesa', nome: "4.2 Coesão: tempos e modos verbais", relevancia: 4, peso: 1 },
+    { id: 'lp_06', disciplina: 'Língua Portuguesa', nome: "5.1 Classes de Palavras", relevancia: 3, peso: 1 },
+    { id: 'lp_07', disciplina: 'Língua Portuguesa', nome: "5.2/5.3 Coordenação e Subordinação", relevancia: 4, peso: 1 },
+    { id: 'lp_08', disciplina: 'Língua Portuguesa', nome: "5.4 Pontuação", relevancia: 4, peso: 1 },
+    { id: 'lp_09', disciplina: 'Língua Portuguesa', nome: "5.5/5.6 Concordância e Regência", relevancia: 4, peso: 1 },
+    { id: 'lp_10', disciplina: 'Língua Portuguesa', nome: "5.7 Crase", relevancia: 4, peso: 1 },
+    { id: 'lp_11', disciplina: 'Língua Portuguesa', nome: "5.8 Colocação Pronominal", relevancia: 2, peso: 1 },
+    { id: 'lp_12', disciplina: 'Língua Portuguesa', nome: "6.1 Significação das Palavras", relevancia: 4, peso: 1 },
+    { id: 'lp_13', disciplina: 'Língua Portuguesa', nome: "6.2 Substituição de palavras/trechos", relevancia: 5, peso: 1 },
+    { id: 'lp_14', disciplina: 'Língua Portuguesa', nome: "6.3 Reorganização de orações e períodos", relevancia: 5, peso: 1 },
+    { id: 'lp_15', disciplina: 'Língua Portuguesa', nome: "6.4 Reescrita de gêneros e formalidade", relevancia: 4, peso: 1 },
+    { id: 'df_01', disciplina: 'Conhecimentos do DF e Legislação', nome: "1. Realidade DF/RIDE", relevancia: 2, peso: 2 },
     { id: 'df_02', disciplina: 'Conhecimentos do DF e Legislação', nome: "2. Plano Distrital de Política para Mulheres (PDPM)", relevancia: 3, peso: 2 },
-    { id: 'df_03', disciplina: 'Conhecimentos do DF e Legislação', nome: "3. Lei Orgânica do DF — Título VI", relevancia: 3, peso: 2 },
-    { id: 'df_04', disciplina: 'Conhecimentos do DF e Legislação', nome: "4. LC 840/2011 (Estatuto Servidores DF) — Tít. I, V, VI, VII", relevancia: 5, peso: 2 },
+    { id: 'df_03', disciplina: 'Conhecimentos do DF e Legislação', nome: "3. Lei Orgânica DF — Título VI", relevancia: 3, peso: 2 },
+    { id: 'df_04', disciplina: 'Conhecimentos do DF e Legislação', nome: "4. LC 840/2011 — Tít. I, V, VI, VII", relevancia: 5, peso: 2 },
     { id: 'df_05', disciplina: 'Conhecimentos do DF e Legislação', nome: "5. Lei 11.340/2006 (Maria da Penha)", relevancia: 5, peso: 2 },
     { id: 'df_06', disciplina: 'Conhecimentos do DF e Legislação', nome: "6. Lei Distrital 7.484/2024", relevancia: 4, peso: 2 },
-    { id: 'df_07', disciplina: 'Conhecimentos do DF e Legislação', nome: "7. Noções de Primeiros Socorros", relevancia: 2, peso: 2 },
-    { id: 'suas_01', disciplina: 'SUAS e Assistência Social', nome: "1. LOAS, PNAS/2004 e SUAS", relevancia: 5, peso: 2 },
-    { id: 'suas_02', disciplina: 'SUAS e Assistência Social', nome: "2. NOB/SUAS (responsabilidades, cofinanciamento)", relevancia: 4, peso: 2 },
-    { id: 'suas_03', disciplina: 'SUAS e Assistência Social', nome: "3. NOB-RH/SUAS (Resolução CNAS 269/2006)", relevancia: 2, peso: 2 },
-    { id: 'suas_04', disciplina: 'SUAS e Assistência Social', nome: "4. Tipificação Nacional de Serviços Socioassistenciais", relevancia: 3, peso: 2 },
-    { id: 'suas_05', disciplina: 'SUAS e Assistência Social', nome: "5. Instâncias de pactuação, deliberação e controle social", relevancia: 3, peso: 2 },
-    { id: 'suas_06', disciplina: 'SUAS e Assistência Social', nome: "6. CadÚnico e Protocolo de Gestão Integrada", relevancia: 3, peso: 2 },
-    { id: 'suas_07', disciplina: 'SUAS e Assistência Social', nome: "7. MROSC: parceria e chamamento público", relevancia: 3, peso: 2 },
-    { id: 'dir_01', disciplina: 'Direitos e Vulnerabilidades Sociais', nome: "1. ECA, SINASE, acolhimento e adoção", relevancia: 3, peso: 1 },
-    { id: 'dir_02', disciplina: 'Direitos e Vulnerabilidades Sociais', nome: "2. Violência doméstica e Lei Maria da Penha (aprofundamento)", relevancia: 4, peso: 1 },
-    { id: 'dir_03', disciplina: 'Direitos e Vulnerabilidades Sociais', nome: "3. Pessoa idosa e PCD: Estatutos e LBI", relevancia: 3, peso: 1 },
-    { id: 'dir_04', disciplina: 'Direitos e Vulnerabilidades Sociais', nome: "4. População em situação de rua, pobreza, exclusão", relevancia: 2, peso: 1 },
-    { id: 'dir_05', disciplina: 'Direitos e Vulnerabilidades Sociais', nome: "5. Diversidade, equidade e relações étnico-raciais", relevancia: 2, peso: 1 },
+    { id: 'df_07', disciplina: 'Conhecimentos do DF e Legislação', nome: "7. Noções de Primeiros Socorros", relevancia: 3, peso: 2 },
+    { id: 'suas_01', disciplina: 'SUAS e Assistência Social', nome: "1. PNAS/2004 e organização da assistência social", relevancia: 4, peso: 2 },
+    { id: 'suas_02', disciplina: 'SUAS e Assistência Social', nome: "2. SUAS: princípios, diretrizes, seguranças socioassistenciais", relevancia: 4, peso: 2 },
+    { id: 'suas_03', disciplina: 'SUAS e Assistência Social', nome: "3. NOB/SUAS (2012): responsabilidades, cofinanciamento, vigilância", relevancia: 3, peso: 2 },
     { id: 'prog_01', disciplina: 'Programas Socioassistenciais DF', nome: "1. Cartão Prato Cheio", relevancia: 4, peso: 1 },
-    { id: 'prog_02', disciplina: 'Programas Socioassistenciais DF', nome: "2. Programa Cartão Gás", relevancia: 2, peso: 1 },
+    { id: 'prog_02', disciplina: 'Programas Socioassistenciais DF', nome: "2. Programa Cartão Gás", relevancia: 3, peso: 1 },
     { id: 'prog_03', disciplina: 'Programas Socioassistenciais DF', nome: "3. Plano DF Social", relevancia: 4, peso: 1 },
-    { id: 'prog_04', disciplina: 'Programas Socioassistenciais DF', nome: "4. Benefícios Eventuais da Assistência Social DF", relevancia: 3, peso: 1 },
-    { id: 'prog_05', disciplina: 'Programas Socioassistenciais DF', nome: "5. SISAN / Restaurante Comunitário", relevancia: 2, peso: 1 },
-    { id: 'cg_01', disciplina: 'Contabilidade Geral e Societária', nome: "1. Estrutura Conceitual e Normas Contábeis (CPC, IASB)", relevancia: 4, peso: 3 },
-    { id: 'cg_02', disciplina: 'Contabilidade Geral e Societária', nome: "2. Receitas, Despesas, Ganhos, Perdas e Conceito de Lucro", relevancia: 5, peso: 3 },
-    { id: 'cg_03', disciplina: 'Contabilidade Geral e Societária', nome: "3. Mensuração e Avaliação de Ativos, Passivos e PL", relevancia: 5, peso: 3 },
-    { id: 'cg_04', disciplina: 'Contabilidade Geral e Societária', nome: "4. Evidenciação Contábil (notas explicativas)", relevancia: 3, peso: 3 },
-    { id: 'afab_01', disciplina: 'Adm. Financeira e Análise de Balanços', nome: "1. Análise de Liquidez: conceitos, métodos e indicadores", relevancia: 4, peso: 2 },
-    { id: 'afab_02', disciplina: 'Adm. Financeira e Análise de Balanços', nome: "2. Planejamento de Caixa e CGL", relevancia: 3, peso: 2 },
-    { id: 'afab_03', disciplina: 'Adm. Financeira e Análise de Balanços', nome: "3. Gestão de Estoques e Valores a Receber", relevancia: 3, peso: 2 },
-    { id: 'afab_04', disciplina: 'Adm. Financeira e Análise de Balanços', nome: "4. Risco x Rentabilidade e Gestão do Capital de Giro", relevancia: 3, peso: 2 },
-    { id: 'casp_01', disciplina: 'CASP', nome: "1. Contabilidade Pública e seu Ambiente", relevancia: 3, peso: 3 },
-    { id: 'casp_02', disciplina: 'CASP', nome: "2. MCASP — Manual de Contabilidade Pública", relevancia: 5, peso: 3 },
-    { id: 'casp_03', disciplina: 'CASP', nome: "3. PCASP — Plano de Contas Aplicado ao Setor Público", relevancia: 4, peso: 3 },
-    { id: 'casp_04', disciplina: 'CASP', nome: "4. DCASP — Demonstrações Contábeis e Análise", relevancia: 4, peso: 3 },
-    { id: 'casp_05', disciplina: 'CASP', nome: "5. NBC TSP", relevancia: 4, peso: 3 },
-    { id: 'casp_06', disciplina: 'CASP', nome: "6. Procedimentos Contábeis Orçamentários e Patrimoniais", relevancia: 5, peso: 3 },
-    { id: 'afo_01', disciplina: 'Orçamento Público e AFO', nome: "1. Evolução Conceitual e Princípios Orçamentários", relevancia: 3, peso: 3 },
-    { id: 'afo_02', disciplina: 'Orçamento Público e AFO', nome: "2. Lei 4.320/1964 e LRF (LC 101/2000)", relevancia: 5, peso: 3 },
-    { id: 'afo_03', disciplina: 'Orçamento Público e AFO', nome: "3. PPA, LDO e LOA: estrutura e trâmite", relevancia: 4, peso: 3 },
-    { id: 'afo_04', disciplina: 'Orçamento Público e AFO', nome: "4. Execução Orçamentária: estágios, créditos adicionais, RP", relevancia: 5, peso: 3 },
-    { id: 'aud_01', disciplina: 'Auditoria Contábil e Governamental', nome: "1. Marco Legal, Princípios, Normas e Técnicas", relevancia: 4, peso: 3 },
-    { id: 'aud_02', disciplina: 'Auditoria Contábil e Governamental', nome: "2. Controles Internos: planejamento, execução, avaliação", relevancia: 4, peso: 3 },
-    { id: 'aud_03', disciplina: 'Auditoria Contábil e Governamental', nome: "3. Papéis de Trabalho, Pareceres e Relatórios", relevancia: 4, peso: 3 },
-    { id: 'aud_04', disciplina: 'Auditoria Contábil e Governamental', nome: "4. Auditoria por Ciclos (receitas, compras, caixa, ativos)", relevancia: 3, peso: 3 },
+    { id: 'prog_04', disciplina: 'Programas Socioassistenciais DF', nome: "4. Benefícios Eventuais da Política de Assistência Social DF", relevancia: 4, peso: 1 },
+    { id: 'prog_05', disciplina: 'Programas Socioassistenciais DF', nome: "5. SISAN / Restaurante Comunitário", relevancia: 3, peso: 1 },
+    { id: 'const_01', disciplina: 'Direito Constitucional', nome: "1. CF/1988: princípios fundamentais", relevancia: 3, peso: 2 },
+    { id: 'const_02', disciplina: 'Direito Constitucional', nome: "2. Direitos e garantias fundamentais (individuais, coletivos, sociais)", relevancia: 3, peso: 2 },
+    { id: 'const_03', disciplina: 'Direito Constitucional', nome: "3. Organização do Estado e Administração Pública (servidores)", relevancia: 4, peso: 2 },
+    { id: 'adm_01', disciplina: 'Direito Administrativo', nome: "1. Estado, governo e administração pública: conceitos", relevancia: 4, peso: 3 },
+    { id: 'adm_02', disciplina: 'Direito Administrativo', nome: "2. Ato Administrativo: conceito, requisitos, atributos, extinção", relevancia: 5, peso: 3 },
+    { id: 'adm_03', disciplina: 'Direito Administrativo', nome: "3. Poderes da Administração (hierárquico, disciplinar, polícia)", relevancia: 5, peso: 3 },
+    { id: 'adm_04', disciplina: 'Direito Administrativo', nome: "4. Regime Jurídico Servidores DF — LC 840/2011 (aprofundado)", relevancia: 5, peso: 3 },
+    { id: 'rot_01', disciplina: 'Rotinas Administrativas e Arquivologia', nome: "1. Qualidade no atendimento e trabalho em equipe", relevancia: 4, peso: 3 },
+    { id: 'rot_02', disciplina: 'Rotinas Administrativas e Arquivologia', nome: "2. Redação Oficial e Comunicações Administrativas", relevancia: 5, peso: 3 },
+    { id: 'rot_03', disciplina: 'Rotinas Administrativas e Arquivologia', nome: "3. Arquivologia: organização, controle de documentos, protocolo", relevancia: 5, peso: 3 },
+    { id: 'rm_01', disciplina: 'Recursos Materiais, Patrimônio e Compras', nome: "1. Administração de Materiais: classificação, estoques, armazenagem", relevancia: 4, peso: 3 },
+    { id: 'rm_02', disciplina: 'Recursos Materiais, Patrimônio e Compras', nome: "2. Gestão Patrimonial: tombamento, inventário, baixa", relevancia: 4, peso: 3 },
+    { id: 'rm_03', disciplina: 'Recursos Materiais, Patrimônio e Compras', nome: "3. Compras no Setor Público (Lei 14.133/2021)", relevancia: 5, peso: 3 },
 ];
 // --- PRÉ-CALIBRAÇÃO FSRS baseada em horas estudadas ---
 // Tópicos sem entrada aqui iniciam como NOVOS (state=0, reps=0)
 const SEED_STATES = {
-    cg_01: {"difficulty": 3.8, "stability": 12, "reps": 2, "lapses": 0, "state": 2, "last_review": "2026-05-16", "scheduled_days": 12, "elapsed_days": 0, "data_proxima_revisao": "2026-05-28", "history": []},
-    cg_02: {"difficulty": 3.5, "stability": 14, "reps": 2, "lapses": 0, "state": 2, "last_review": "2026-05-16", "scheduled_days": 14, "elapsed_days": 0, "data_proxima_revisao": "2026-05-30", "history": []},
-    cg_03: {"difficulty": 3.5, "stability": 14, "reps": 2, "lapses": 0, "state": 2, "last_review": "2026-05-16", "scheduled_days": 14, "elapsed_days": 0, "data_proxima_revisao": "2026-05-30", "history": []},
-    cg_04: {"difficulty": 4.0, "stability": 10, "reps": 2, "lapses": 0, "state": 2, "last_review": "2026-05-16", "scheduled_days": 10, "elapsed_days": 0, "data_proxima_revisao": "2026-05-26", "history": []},
-    casp_01: {"difficulty": 5.0, "stability": 6, "reps": 1, "lapses": 0, "state": 2, "last_review": "2026-05-16", "scheduled_days": 6, "elapsed_days": 0, "data_proxima_revisao": "2026-05-22", "history": []},
-    casp_02: {"difficulty": 4.5, "stability": 9, "reps": 2, "lapses": 0, "state": 2, "last_review": "2026-05-16", "scheduled_days": 9, "elapsed_days": 0, "data_proxima_revisao": "2026-05-25", "history": []},
-    casp_03: {"difficulty": 5.0, "stability": 7, "reps": 1, "lapses": 0, "state": 2, "last_review": "2026-05-16", "scheduled_days": 7, "elapsed_days": 0, "data_proxima_revisao": "2026-05-23", "history": []},
-    casp_04: {"difficulty": 5.0, "stability": 7, "reps": 1, "lapses": 0, "state": 2, "last_review": "2026-05-16", "scheduled_days": 7, "elapsed_days": 0, "data_proxima_revisao": "2026-05-23", "history": []},
-    casp_05: {"difficulty": 5.5, "stability": 6, "reps": 1, "lapses": 0, "state": 2, "last_review": "2026-05-16", "scheduled_days": 6, "elapsed_days": 0, "data_proxima_revisao": "2026-05-22", "history": []},
-    casp_06: {"difficulty": 4.5, "stability": 9, "reps": 2, "lapses": 0, "state": 2, "last_review": "2026-05-16", "scheduled_days": 9, "elapsed_days": 0, "data_proxima_revisao": "2026-05-25", "history": []},
-    aud_01: {"difficulty": 4.0, "stability": 10, "reps": 2, "lapses": 0, "state": 2, "last_review": "2026-05-16", "scheduled_days": 10, "elapsed_days": 0, "data_proxima_revisao": "2026-05-26", "history": []},
-    aud_02: {"difficulty": 4.0, "stability": 10, "reps": 2, "lapses": 0, "state": 2, "last_review": "2026-05-16", "scheduled_days": 10, "elapsed_days": 0, "data_proxima_revisao": "2026-05-26", "history": []},
-    aud_03: {"difficulty": 4.0, "stability": 10, "reps": 2, "lapses": 0, "state": 2, "last_review": "2026-05-16", "scheduled_days": 10, "elapsed_days": 0, "data_proxima_revisao": "2026-05-26", "history": []},
-    aud_04: {"difficulty": 4.5, "stability": 8, "reps": 1, "lapses": 0, "state": 2, "last_review": "2026-05-16", "scheduled_days": 8, "elapsed_days": 0, "data_proxima_revisao": "2026-05-24", "history": []},
-    afo_01: {"difficulty": 6.0, "stability": 5, "reps": 1, "lapses": 1, "state": 2, "last_review": "2026-05-11", "scheduled_days": 5, "elapsed_days": 5, "data_proxima_revisao": "2026-05-16", "history": []},
-    afo_02: {"difficulty": 6.0, "stability": 5, "reps": 1, "lapses": 1, "state": 2, "last_review": "2026-05-11", "scheduled_days": 5, "elapsed_days": 5, "data_proxima_revisao": "2026-05-16", "history": []},
-    afo_03: {"difficulty": 6.5, "stability": 4, "reps": 1, "lapses": 1, "state": 2, "last_review": "2026-05-12", "scheduled_days": 4, "elapsed_days": 4, "data_proxima_revisao": "2026-05-16", "history": []},
-    afo_04: {"difficulty": 7.0, "stability": 3, "reps": 1, "lapses": 2, "state": 2, "last_review": "2026-05-13", "scheduled_days": 3, "elapsed_days": 3, "data_proxima_revisao": "2026-05-16", "history": []},
     df_04: {"difficulty": 4.5, "stability": 7, "reps": 1, "lapses": 0, "state": 2, "last_review": "2026-05-16", "scheduled_days": 7, "elapsed_days": 0, "data_proxima_revisao": "2026-05-23", "history": []},
+    adm_01: {"difficulty": 5.0, "stability": 7, "reps": 1, "lapses": 0, "state": 2, "last_review": "2026-05-16", "scheduled_days": 7, "elapsed_days": 0, "data_proxima_revisao": "2026-05-23", "history": []},
+    adm_02: {"difficulty": 4.5, "stability": 9, "reps": 2, "lapses": 0, "state": 2, "last_review": "2026-05-16", "scheduled_days": 9, "elapsed_days": 0, "data_proxima_revisao": "2026-05-25", "history": []},
+    adm_03: {"difficulty": 4.5, "stability": 9, "reps": 2, "lapses": 0, "state": 2, "last_review": "2026-05-16", "scheduled_days": 9, "elapsed_days": 0, "data_proxima_revisao": "2026-05-25", "history": []},
+    adm_04: {"difficulty": 4.5, "stability": 9, "reps": 2, "lapses": 0, "state": 2, "last_review": "2026-05-16", "scheduled_days": 9, "elapsed_days": 0, "data_proxima_revisao": "2026-05-25", "history": []},
+    const_01: {"difficulty": 4.0, "stability": 10, "reps": 2, "lapses": 0, "state": 2, "last_review": "2026-05-16", "scheduled_days": 10, "elapsed_days": 0, "data_proxima_revisao": "2026-05-26", "history": []},
+    const_02: {"difficulty": 4.0, "stability": 10, "reps": 2, "lapses": 0, "state": 2, "last_review": "2026-05-16", "scheduled_days": 10, "elapsed_days": 0, "data_proxima_revisao": "2026-05-26", "history": []},
+    const_03: {"difficulty": 4.0, "stability": 10, "reps": 2, "lapses": 0, "state": 2, "last_review": "2026-05-16", "scheduled_days": 10, "elapsed_days": 0, "data_proxima_revisao": "2026-05-26", "history": []},
 };
 
 // --- MODO RETA FINAL (Filtra topicos com relevancia < 3) ---
@@ -106,7 +81,7 @@ const ONE_DAY_MS = 24 * 60 * 60 * 1000;
 const STUDY_MODE_OPTIONS = ['mixed', 'theory', 'questions'];
 
 // === NAMESPACE POR CARGO (resolve conflito entre Contador e Técnico) ===
-const CARGO = 'contador';
+const CARGO = 'tecnico';
 const PERSONAL_DB_KEY = `editaliza_${CARGO}_personal_db`;
 
 // Migração única: se houver dados antigos sem namespace, copia para a chave do cargo
@@ -2247,8 +2222,8 @@ const CALIBRATION_LEVELS = [
 
 const SYLLABUS_STORAGE_KEY = `editaliza_${CARGO}_custom_syllabus_v1`;
 const TITLE_STORAGE_KEY = `editaliza_${CARGO}_custom_title_v1`;
-const DEFAULT_APP_TITLE = 'SEDES-DF · Contador';
-const DEFAULT_APP_SUBTITLE = 'Auditor Fiscal — Ciências Contábeis (Quadrix)';
+const DEFAULT_APP_TITLE = 'Monitorest · Técnico';
+const DEFAULT_APP_SUBTITLE = 'Técnico Administrativo (Quadrix)';
 let SYLLABUS = carregarConteudoProgramatico();
 let RELEVANCIA_POR_ID = {};
 let TOPICO_POR_ID = {};

@@ -1,6 +1,6 @@
 @echo off
 REM ====================================================
-REM   Push automatico para GitHub - SEDES-DF 2026
+REM   Push automatico para GitHub - Monitorest
 REM   Da dois cliques neste arquivo para subir tudo.
 REM ====================================================
 
@@ -17,7 +17,7 @@ git add .
 echo.
 echo === Commit ===
 set /p MSG="Mensagem do commit (Enter para padrao): "
-if "%MSG%"=="" set MSG=Atualizacao SEDES-DF 2026 (Claude)
+if "%MSG%"=="" set MSG=Atualizacao Monitorest (Claude)
 git commit -m "%MSG%"
 
 echo.

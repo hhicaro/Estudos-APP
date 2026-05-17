@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>SEDES-DF · Horas Líquidas</title>
+<title>Monitorest · Horas Líquidas</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;700&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,400&display=swap" rel="stylesheet">
 <style>
@@ -163,11 +163,11 @@ input.dark{background:var(--bg4);border:1px solid var(--border);color:var(--text
     <button class="sb-btn" id="sb1" onclick="showView('mat')" title="Matérias">📋</button>
     <button class="sb-btn" id="sb2" onclick="showView('dash')" title="Dashboard">◫</button>
     <div class="sb-sep"></div>
-    <a class="sb-btn" href="prioridade.html" title="Voltar ao Painel SEDES" style="color:var(--amber)">←</a>
+    <a class="sb-btn" href="prioridade.html" title="Voltar ao Painel Monitorest" style="color:var(--amber)">←</a>
   </div>
   <div class="main">
     <div class="topbar">
-      <span class="topbar-title">SEDES-DF · HORA DO FOCO</span>
+      <span class="topbar-title">Monitorest · HORA DO FOCO</span>
       <div class="topbar-sep"></div>
       <span class="topbar-date" id="top-date"></span>
       <div class="topbar-right">
@@ -261,7 +261,7 @@ input.dark{background:var(--bg4);border:1px solid var(--border);color:var(--text
         <div class="subj-view-wrap">
           <div class="subj-panel">
             <div class="sec-title">
-              <span>Matérias do edital SEDES-DF 2026</span>
+              <span>Matérias do edital Monitorest</span>
               <span style="display:flex;gap:8px;align-items:center">
                 <span id="subj-count" style="font-size:10px;color:var(--text3)"></span>
                 <button onclick="restoreDefaults()" style="font-family:var(--mono);font-size:9px;color:var(--text3);background:none;border:none;cursor:pointer;text-decoration:underline;letter-spacing:.06em" title="Restaurar matérias do edital">↺ padrão</button>
@@ -285,7 +285,7 @@ input.dark{background:var(--bg4);border:1px solid var(--border);color:var(--text
 
       <div class="view" id="v-dash">
         <div class="dash-wrap">
-          <div class="dash-h">Dashboard — Horas SEDES-DF 2026</div>
+          <div class="dash-h">Dashboard — Horas Monitorest</div>
           <div class="dash-stats">
             <div class="dsc">
               <div class="dsc-lbl">Total acumulado</div>
@@ -306,7 +306,7 @@ input.dark{background:var(--bg4);border:1px solid var(--border);color:var(--text
               </div>
             </div>
             <div class="dsc">
-              <div class="dsc-lbl">Prova SEDES</div>
+              <div class="dsc-lbl">Prova</div>
               <div class="dsc-val" id="d-dias" style="font-size:28px">—</div>
               <div class="dsc-sub">06/09/2026</div>
             </div>
@@ -330,7 +330,7 @@ input.dark{background:var(--bg4);border:1px solid var(--border);color:var(--text
 <script>
 const C=['#ff5252','#40c4ff','#ffab40','#ce93d8','#69f0ae','#ff4081','#80cbc4','#fff176','#ef9a9a','#80deea','#a5d6a7','#ffe082','#f48fb1','#90caf9','#a5d6a7','#fff59d','#ffcc80'];
 
-// === DEFAULT SUBJECTS por cargo (matérias do edital SEDES-DF 2026) ===
+// === DEFAULT SUBJECTS por cargo (matérias do edital Monitorest) ===
 const DEFAULT_SUBJECTS=[
   // Comuns (ambos cargos)
   {name:'Língua Portuguesa',min:0,grupo:'comum'},
@@ -568,7 +568,7 @@ function editSubj(i){
 }
 
 function restoreDefaults(){
-  if(S.subjects.length>0&&!confirm('Adiciona matérias padrão do edital SEDES mantendo as que você já tem. Confirmar?'))return;
+  if(S.subjects.length>0&&!confirm('Adiciona matérias padrão do edital mantendo as que você já tem. Confirmar?'))return;
   DEFAULT_SUBJECTS.forEach(def=>{if(!S.subjects.find(s=>s.name===def.name))S.subjects.push({...def});});
   save();renderSubjects();
 }

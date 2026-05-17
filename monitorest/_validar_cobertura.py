@@ -1,5 +1,5 @@
 """
-Valida se os syllabus JSON cobrem todo o edital SEDES-DF 2026.
+Valida se os syllabus JSON cobrem todo o edital Monitorest.
 Uso: python _validar_cobertura.py
 """
 import json
