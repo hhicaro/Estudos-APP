@@ -40,20 +40,27 @@ body::before{content:'';position:fixed;inset:0;background:repeating-linear-gradi
 .view{position:absolute;inset:0;overflow-y:auto;display:none}
 .view.active{display:block}
 .timer-layout{display:grid;grid-template-columns:1fr 280px;height:100%}
-.timer-left{padding:20px 24px;display:flex;flex-direction:column;gap:16px;overflow-y:auto;align-items:center}
-.timer-left>*{width:100%;max-width:680px}
+.timer-left{padding:28px;display:flex;flex-direction:column;gap:20px;overflow-y:auto;align-items:center;justify-content:center}
+.timer-left>*{width:100%;max-width:520px}
 .timer-right{background:var(--bg2);border-left:1px solid var(--border);padding:20px;display:flex;flex-direction:column;gap:16px;overflow-y:auto}
-.clock-card{background:var(--bg2);border:1px solid var(--border);border-radius:var(--r);padding:18px 24px;text-align:center;position:relative;overflow:hidden}
+.clock-card{background:var(--bg2);border:1px solid var(--border);border-radius:var(--r);padding:32px 36px;text-align:center;position:relative;overflow:hidden}
 .clock-card.running{border-color:rgba(0,230,118,.2)}
 .clock-card.running::after{content:'';position:absolute;top:0;left:50%;transform:translateX(-50%);width:160px;height:1px;background:linear-gradient(90deg,transparent,var(--green),transparent)}
-.ring-wrap{position:relative;width:150px;height:150px;margin:0 auto 12px;cursor:pointer}
-.ring-svg{width:150px;height:150px;transform:rotate(-90deg)}
-.ring-track{fill:none;stroke:var(--bg4);stroke-width:5}
-.ring-progress{fill:none;stroke:var(--red);stroke-width:5;stroke-linecap:round;stroke-dasharray:440;stroke-dashoffset:0;transition:stroke-dashoffset 1s linear,stroke .3s}
+.ring-wrap{position:relative;width:200px;height:200px;margin:0 auto 18px;cursor:pointer}
+.ring-svg{width:200px;height:200px;transform:rotate(-90deg)}
+.ring-track{fill:none;stroke:var(--bg4);stroke-width:6}
+.ring-progress{fill:none;stroke:var(--red);stroke-width:6;stroke-linecap:round;stroke-dasharray:565;stroke-dashoffset:0;transition:stroke-dashoffset 1s linear,stroke .3s}
 .ring-progress.focus{stroke:#ff5252}
 .ring-progress.break-ring{stroke:var(--blue)}
 .ring-center{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);text-align:center}
-.ring-time{font-family:var(--mono);font-size:30px;font-weight:300;line-height:1;color:var(--text);transition:color .3s}
+.ring-time{font-family:var(--mono);font-size:40px;font-weight:300;line-height:1;color:var(--text);transition:color .3s}
+/* Aba Matérias (full screen) */
+.subj-view-wrap{padding:28px;max-width:980px;margin:0 auto;height:100%;display:flex;flex-direction:column;gap:16px;overflow-y:auto}
+.subj-view-wrap .subj-panel{padding:24px}
+.subj-view-wrap .subj-list{gap:4px}
+.subj-view-wrap .srow{padding:10px 12px}
+.subj-view-wrap .sname{font-size:13px}
+.subj-view-wrap .stime{font-size:12px}
 .ring-label{font-family:var(--mono);font-size:9px;letter-spacing:.16em;color:var(--text3);text-transform:uppercase;margin-top:4px}
 .ring-wrap:hover .ring-play-icon{opacity:1!important}
 .ring-play-icon{font-size:28px;color:var(--red);margin-top:6px;opacity:0;transition:opacity .2s;line-height:1}
@@ -153,7 +160,8 @@ input.dark{background:var(--bg4);border:1px solid var(--border);color:var(--text
   <div class="sidebar">
     <span class="sb-logo">HL</span>
     <button class="sb-btn active" id="sb0" onclick="showView('timer')" title="Timer">⏱</button>
-    <button class="sb-btn" id="sb1" onclick="showView('dash')" title="Dashboard">◫</button>
+    <button class="sb-btn" id="sb1" onclick="showView('mat')" title="Matérias">📋</button>
+    <button class="sb-btn" id="sb2" onclick="showView('dash')" title="Dashboard">◫</button>
     <div class="sb-sep"></div>
     <a class="sb-btn" href="prioridade.html" title="Voltar ao Painel SEDES" style="color:var(--amber)">←</a>
   </div>
@@ -165,7 +173,8 @@ input.dark{background:var(--bg4);border:1px solid var(--border);color:var(--text
       <div class="topbar-right">
         <a class="top-tab" href="prioridade.html" style="color:var(--amber);border-color:rgba(255,171,64,.3)">← Painel</a>
         <button class="top-tab active" id="tt0" onclick="showView('timer')">Timer</button>
-        <button class="top-tab" id="tt1" onclick="showView('dash')">Dashboard</button>
+        <button class="top-tab" id="tt1" onclick="showView('mat')">Matérias</button>
+        <button class="top-tab" id="tt2" onclick="showView('dash')">Dashboard</button>
       </div>
     </div>
     <div class="views">
@@ -181,9 +190,9 @@ input.dark{background:var(--bg4);border:1px solid var(--border);color:var(--text
               <div class="ring-row">
                 <button class="ring-side-btn" onclick="resetTimer()" title="Resetar">↺</button>
                 <div class="ring-wrap" onclick="toggleTimer()" title="Clique para iniciar/pausar">
-                  <svg class="ring-svg" viewBox="0 0 150 150">
-                    <circle class="ring-track" cx="75" cy="75" r="70"/>
-                    <circle class="ring-progress focus" id="ring" cx="75" cy="75" r="70"/>
+                  <svg class="ring-svg" viewBox="0 0 200 200">
+                    <circle class="ring-track" cx="100" cy="100" r="90"/>
+                    <circle class="ring-progress focus" id="ring" cx="100" cy="100" r="90"/>
                   </svg>
                   <div class="ring-center">
                     <div class="ring-time" id="ring-time">25:00</div>
@@ -203,25 +212,8 @@ input.dark{background:var(--bg4);border:1px solid var(--border);color:var(--text
                 <button class="dur-btn" id="d50" onclick="setDur(50)">50 min</button>
               </div>
             </div>
-            <div class="subj-panel">
-              <div class="sec-title">
-                <span>Matérias do edital SEDES-DF</span>
-                <span style="display:flex;gap:8px;align-items:center">
-                  <span id="subj-count" style="font-size:10px;color:var(--text3)"></span>
-                  <button onclick="restoreDefaults()" style="font-family:var(--mono);font-size:9px;color:var(--text3);background:none;border:none;cursor:pointer;text-decoration:underline;letter-spacing:.06em" title="Restaurar matérias do edital">↺ padrão</button>
-                </span>
-              </div>
-              <div class="cargo-toggle">
-                <button class="cargo-toggle-btn act" id="cgall" onclick="setFilter('all')">Todas</button>
-                <button class="cargo-toggle-btn" id="cgcont" onclick="setFilter('contador')">Contador</button>
-                <button class="cargo-toggle-btn" id="cgtec" onclick="setFilter('tecnico')">Técnico</button>
-                <button class="cargo-toggle-btn" id="cgcom" onclick="setFilter('comum')">Comuns</button>
-              </div>
-              <div class="subj-list" id="subj-list"></div>
-              <div class="add-row">
-                <input class="dark" id="new-subj" placeholder="Nova matéria..."/>
-                <button class="add-btn" onclick="addSubj()">+ Add</button>
-              </div>
+            <div style="text-align:center;margin-top:8px">
+              <button onclick="showView('mat')" style="font-family:var(--mono);font-size:10px;color:var(--text3);background:none;border:1px solid var(--border);border-radius:6px;padding:6px 14px;cursor:pointer;letter-spacing:.08em;text-transform:uppercase" title="Trocar matéria">📋 Ver todas as matérias</button>
             </div>
           </div>
           <div class="timer-right">
@@ -261,6 +253,32 @@ input.dark{background:var(--bg4);border:1px solid var(--border);color:var(--text
               </label>
               <button class="reset-lnk" onclick="resetAll()">Zerar todos os dados</button>
             </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="view" id="v-mat">
+        <div class="subj-view-wrap">
+          <div class="subj-panel">
+            <div class="sec-title">
+              <span>Matérias do edital SEDES-DF 2026</span>
+              <span style="display:flex;gap:8px;align-items:center">
+                <span id="subj-count" style="font-size:10px;color:var(--text3)"></span>
+                <button onclick="restoreDefaults()" style="font-family:var(--mono);font-size:9px;color:var(--text3);background:none;border:none;cursor:pointer;text-decoration:underline;letter-spacing:.06em" title="Restaurar matérias do edital">↺ padrão</button>
+              </span>
+            </div>
+            <div class="cargo-toggle">
+              <button class="cargo-toggle-btn act" id="cgall" onclick="setFilter('all')">Todas</button>
+              <button class="cargo-toggle-btn" id="cgcont" onclick="setFilter('contador')">Contador</button>
+              <button class="cargo-toggle-btn" id="cgtec" onclick="setFilter('tecnico')">Técnico</button>
+              <button class="cargo-toggle-btn" id="cgcom" onclick="setFilter('comum')">Comuns</button>
+            </div>
+            <div class="subj-list" id="subj-list"></div>
+            <div class="add-row">
+              <input class="dark" id="new-subj" placeholder="Nova matéria..."/>
+              <button class="add-btn" onclick="addSubj()">+ Add</button>
+            </div>
+            <p style="margin-top:14px;font-size:11px;color:var(--text3);font-family:var(--mono);text-align:center">💡 Clique numa matéria para selecionar como ativa. O timer vai contar horas pra ela.</p>
           </div>
         </div>
       </div>
@@ -370,7 +388,7 @@ function setFilter(f){S.filter=f;save();['all','contador','tecnico','comum'].for
 function renderClock(){
   const total=(isBreak?5:S.dur)*60;const pct=Math.round(secs/total*100);
   const el=document.getElementById('ring');
-  if(el){el.style.strokeDashoffset=440*(1-pct/100);el.className='ring-progress '+(isBreak?'break-ring':'focus');el.style.stroke=isBreak?'var(--green)':'var(--red)';}
+  if(el){el.style.strokeDashoffset=565*(1-pct/100);el.className='ring-progress '+(isBreak?'break-ring':'focus');el.style.stroke=isBreak?'var(--green)':'var(--red)';}
   const rt=document.getElementById('ring-time');if(rt){rt.textContent=fmtClock(secs);rt.style.color=running&&isBreak?'var(--green)':running&&!isBreak?'var(--red)':'var(--text)';}
   const rl=document.getElementById('ring-lbl');if(rl){rl.textContent=running?(isBreak?'PAUSA':'FOCUS'):'PAUSADO';}
   const cc=document.getElementById('clock-card');if(cc)cc.className='clock-card'+(running&&!isBreak?' running':'');
@@ -396,27 +414,33 @@ function getFiltered(){
 
 function renderSubjects(){
   const sel=document.getElementById('cur-subj');
-  const prev=sel.value;
   const filt=getFiltered();
-  sel.innerHTML=filt.map(s=>'<option value="'+s._i+'">'+s.name+'</option>').join('');
-  if(prev!==''&&filt.find(s=>s._i==parseInt(prev)))sel.value=prev;
-  document.getElementById('subj-count').textContent=filt.length+' de '+S.subjects.length;
+  if(sel){
+    const prev=sel.value;
+    sel.innerHTML=filt.map(s=>'<option value="'+s._i+'">'+s.name+'</option>').join('');
+    if(prev!==''&&filt.find(s=>s._i==parseInt(prev)))sel.value=prev;
+  }
+  const cnt=document.getElementById('subj-count');
+  if(cnt)cnt.textContent=filt.length+' de '+S.subjects.length;
   const max=Math.max(...S.subjects.map(s=>s.min),1);
-  const si=parseInt(sel.value);
-  document.getElementById('subj-list').innerHTML=filt.map(s=>{
-    const pct=Math.round(s.min/max*100);const col=C[s._i%C.length];
-    return '<div class="srow'+(s._i===si?' sel':'')+'" onclick="selSubj('+s._i+')">'+
-      '<div class="sdot" style="background:'+col+'"></div>'+
-      '<span class="sname">'+s.name+'</span>'+
-      '<span class="stime">'+fmt(s.min)+'</span>'+
-      '<div class="sbar-wrap"><div class="sbar" style="width:'+pct+'%;background:'+col+'"></div></div>'+
-      '<span class="sedit" onclick="event.stopPropagation();editSubj('+s._i+')" title="Renomear">✎</span>'+
-      '<span class="sdel" onclick="event.stopPropagation();delSubj('+s._i+')">×</span>'+
-    '</div>';
-  }).join('');
+  const si=sel?parseInt(sel.value):0;
+  const list=document.getElementById('subj-list');
+  if(list){
+    list.innerHTML=filt.map(s=>{
+      const pct=Math.round(s.min/max*100);const col=C[s._i%C.length];
+      return '<div class="srow'+(s._i===si?' sel':'')+'" onclick="selSubj('+s._i+')">'+
+        '<div class="sdot" style="background:'+col+'"></div>'+
+        '<span class="sname">'+s.name+'</span>'+
+        '<span class="stime">'+fmt(s.min)+'</span>'+
+        '<div class="sbar-wrap"><div class="sbar" style="width:'+pct+'%;background:'+col+'"></div></div>'+
+        '<span class="sedit" onclick="event.stopPropagation();editSubj('+s._i+')" title="Renomear">✎</span>'+
+        '<span class="sdel" onclick="event.stopPropagation();delSubj('+s._i+')">×</span>'+
+      '</div>';
+    }).join('');
+  }
 }
 
-function selSubj(i){document.getElementById('cur-subj').value=i;renderSubjects();}
+function selSubj(i){const sel=document.getElementById('cur-subj');if(sel)sel.value=i;renderSubjects();}
 
 function renderHistory(){
   const el=document.getElementById('hist-list');
@@ -554,7 +578,7 @@ function addSubj(){
   const n=inp.value.trim();if(!n)return;
   S.subjects.push({name:n,min:0,grupo:'comum'});inp.value='';save();renderSubjects();
 }
-document.getElementById('new-subj').addEventListener('keydown',e=>{if(e.key==='Enter')addSubj();});
+document.body.addEventListener('keydown',e=>{const t=e.target;if(t&&t.id==='new-subj'&&e.key==='Enter')addSubj();});
 
 function delSubj(i){if(!confirm('Remover "'+S.subjects[i].name+'"?'))return;S.subjects.splice(i,1);save();renderSubjects();}
 
@@ -568,12 +592,13 @@ function resetAll(){
 function saveMeta(){S.meta=parseInt(document.getElementById('meta-inp').value)||0;save();}
 
 function showView(v){
-  ['timer','dash'].forEach((n,i)=>{
-    document.getElementById('v-'+n).className='view'+(v===n?' active':'');
-    document.getElementById('tt'+i).className='top-tab'+(v===n?' active':'');
-    document.getElementById('sb'+i).className='sb-btn'+(v===n?' active':'');
+  ['timer','mat','dash'].forEach((n,i)=>{
+    const el=document.getElementById('v-'+n);if(el)el.className='view'+(v===n?' active':'');
+    const tt=document.getElementById('tt'+i);if(tt)tt.className='top-tab'+(v===n?' active':'');
+    const sb=document.getElementById('sb'+i);if(sb)sb.className='sb-btn'+(v===n?' active':'');
   });
   if(v==='dash')renderDashboard();
+  if(v==='mat')renderSubjects();
 }
 
 function exportExcel(){

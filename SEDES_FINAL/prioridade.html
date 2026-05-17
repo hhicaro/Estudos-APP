@@ -186,27 +186,7 @@ td.relev { width: 90px; }
 <p style="margin-top:0.75rem;font-size:0.8rem;color:#a3a3a3">Fonte: Anexo I do edital (DODF 14/05/2026). Datas em horário de Brasília, 10h–18h do último dia salvo indicação contrária.</p>
 </div>
 
-<!-- ====== PLANO EXPRESS 27 DIAS — Dinâmico, lê pesos do syllabus ====== -->
-<div class="express-plan-card" style="background:linear-gradient(135deg,#1e3a8a25 0%,#0c4a6e30 100%);border:2px solid #0ea5e9;border-radius:0.75rem;padding:1.25rem;margin-bottom:2rem">
-  <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:0.75rem;flex-wrap:wrap;gap:0.75rem">
-    <div>
-      <h3 style="font-family:'Space Grotesk',sans-serif;font-size:1.1rem;color:#7dd3fc;margin-bottom:0.25rem">🎯 Plano Express 27 dias — fechar essencial</h3>
-      <p style="font-size:0.85rem;color:#a3a3a3">Tópicos ordenados por <strong>score = relevância × peso</strong>. Distribuídos automaticamente nos próximos 27 dias.</p>
-    </div>
-    <div style="display:flex;gap:0.25rem;background:#00000040;padding:0.25rem;border-radius:0.5rem">
-      <button onclick="expSetCargo('contador')" id="expCont" class="exp-tab-btn">Contador</button>
-      <button onclick="expSetCargo('tecnico')" id="expTec" class="exp-tab-btn">Técnico</button>
-      <button onclick="expSetCargo('ambos')" id="expAmbos" class="exp-tab-btn">Ambos</button>
-    </div>
-  </div>
-  <div style="display:flex;gap:1rem;flex-wrap:wrap;margin-bottom:1rem;font-size:0.85rem;color:#a3a3a3">
-    <span>📊 <span id="expTotalTopicos">0</span> tópicos</span>
-    <span>📅 <span id="expSlotsPorDia">0</span> tópicos/dia</span>
-    <span>🎓 Foco em relevância ≥ <select id="expMinRelev" onchange="renderExpressPlan()" style="background:#000;color:#7dd3fc;border:1px solid #0ea5e9;border-radius:4px;padding:2px 6px"><option value="1">1 (tudo)</option><option value="2">2</option><option value="3" selected>3 (recomendado)</option><option value="4">4</option><option value="5">5 (só topo)</option></select></span>
-  </div>
-  <div id="expGrid"></div>
-  <p style="margin-top:0.75rem;font-size:0.8rem;color:#a3a3a3">💡 Após esses 27 dias (~12/06/2026) você terá coberto o conteúdo essencial. Os 80+ dias restantes até 06/09 são para <strong>simulados + revisões com FSRS</strong>. Configure isso no <a href="index_contador.html" style="color:#7dd3fc">índice do cargo</a> com "Sessões por dia" = quantidade de tópicos do plano.</p>
-</div>
+<!-- ====== PLANO EXPRESS 27 DIAS — Agora é uma aba dentro de cada cargo (Contador/Técnico) ====== -->
 <style>
 .exp-tab-btn{font-family:'Space Grotesk',sans-serif;background:transparent;border:none;color:#a3a3a3;padding:0.4rem 0.9rem;border-radius:0.4rem;cursor:pointer;font-weight:600;font-size:0.85rem;transition:all 0.15s}
 .exp-tab-btn:hover{color:#7dd3fc}
@@ -301,36 +281,27 @@ const EXP_SYL_TEC = [
   {disciplina:"Agente Social",nome:"5. Saúde Mental e Redução de Danos ⭐",relevancia:5,peso:3}
 ];
 
-let expCargoAtivo = 'contador';
 const EXP_DIAS = 27;
-
-function expSetCargo(c) {
-  expCargoAtivo = c;
-  document.querySelectorAll('.exp-tab-btn').forEach(b => b.classList.remove('act'));
-  const ids = {contador:'expCont', tecnico:'expTec', ambos:'expAmbos'};
-  document.getElementById(ids[c]).classList.add('act');
-  renderExpressPlan();
-}
 
 function expCor(r) {
   return r >= 5 ? '#dc2626' : r >= 4 ? '#ea580c' : r >= 3 ? '#ca8a04' : r >= 2 ? '#0284c7' : '#71717a';
 }
 
-function renderExpressPlan() {
-  let syl = expCargoAtivo === 'contador' ? EXP_SYL_CONT
-          : expCargoAtivo === 'tecnico' ? EXP_SYL_TEC
-          : [...EXP_SYL_CONT, ...EXP_SYL_TEC];
-  const minRel = parseInt(document.getElementById('expMinRelev').value) || 3;
-  syl = syl.filter(t => t.relevancia >= minRel);
-  const scored = syl.map(t => ({...t, score: t.relevancia * t.peso}));
+function renderExpressPlan(cargo) {
+  const syl = cargo === 'contador' ? EXP_SYL_CONT : EXP_SYL_TEC;
+  const filterEl = document.getElementById('expMinRelev-' + cargo);
+  const minRel = filterEl ? (parseInt(filterEl.value) || 3) : 3;
+  const filtered = syl.filter(t => t.relevancia >= minRel);
+  const scored = filtered.map(t => ({...t, score: t.relevancia * t.peso}));
   scored.sort((a,b) => b.score - a.score || b.relevancia - a.relevancia);
   const slotsPorDia = Math.max(1, Math.ceil(scored.length / EXP_DIAS));
-  document.getElementById('expTotalTopicos').textContent = scored.length;
-  document.getElementById('expSlotsPorDia').textContent = slotsPorDia;
+  const totEl = document.getElementById('expTotalTopicos-' + cargo);
+  const slotsEl = document.getElementById('expSlotsPorDia-' + cargo);
+  if (totEl) totEl.textContent = scored.length;
+  if (slotsEl) slotsEl.textContent = slotsPorDia;
   const today = new Date();
   const DOW = ['Dom','Seg','Ter','Qua','Qui','Sex','Sáb'];
   let html = '';
-  let dist = 0;
   for (let d = 0; d < EXP_DIAS; d++) {
     const date = new Date(today);
     date.setDate(date.getDate() + d);
@@ -345,14 +316,17 @@ function renderExpressPlan() {
       html += '<div class="topic-name">'+t.nome+'</div>';
       html += '<small class="score-tag">★'+t.relevancia+' × peso '+t.peso+' = '+t.score+'</small>';
       html += '</div>';
-      dist++;
     });
     html += '</div>';
   }
-  document.getElementById('expGrid').innerHTML = html;
+  const grid = document.getElementById('expGrid-' + cargo);
+  if (grid) grid.innerHTML = html;
 }
 
-document.addEventListener('DOMContentLoaded', () => { expSetCargo('contador'); });
+document.addEventListener('DOMContentLoaded', () => {
+  renderExpressPlan('contador');
+  renderExpressPlan('tecnico');
+});
 </script>
 <!-- ====== FIM PLANO EXPRESS ====== -->
 <div class="cargo-bar">
@@ -424,6 +398,20 @@ document.addEventListener('DOMContentLoaded', () => { expSetCargo('contador'); }
 <div class="tabs">
 <button class="tab active" onclick="showView('prioridade-contador', this)">📊 Prioridade por Disciplina</button>
 <button class="tab" onclick="showView('cronograma-contador', this)">📅 Cronograma 113d</button>
+<button class="tab" onclick="showView('express-contador', this)" style="color:#0ea5e9">🎯 Plano Express 27d</button>
+</div>
+<div id="express-contador" class="view" style="background:linear-gradient(135deg,#1e3a8a25 0%,#0c4a6e30 100%);border:2px solid #0ea5e9;border-radius:0.75rem;padding:1.25rem">
+  <div style="margin-bottom:0.75rem">
+    <h3 style="font-family:'Space Grotesk',sans-serif;font-size:1.1rem;color:#7dd3fc;margin-bottom:0.25rem">🎯 Plano Express 27 dias — Contador</h3>
+    <p style="font-size:0.85rem;color:#a3a3a3">Tópicos ordenados por <strong>score = relevância × peso</strong>. Distribuídos automaticamente nos próximos 27 dias (até ~12/06).</p>
+  </div>
+  <div style="display:flex;gap:1rem;flex-wrap:wrap;margin-bottom:1rem;font-size:0.85rem;color:#a3a3a3">
+    <span>📊 <span id="expTotalTopicos-contador">0</span> tópicos</span>
+    <span>📅 <span id="expSlotsPorDia-contador">0</span> tópicos/dia</span>
+    <span>🎓 Foco em relevância ≥ <select id="expMinRelev-contador" onchange="renderExpressPlan('contador')" style="background:#000;color:#7dd3fc;border:1px solid #0ea5e9;border-radius:4px;padding:2px 6px"><option value="1">1 (tudo)</option><option value="2">2</option><option value="3" selected>3 (recomendado)</option><option value="4">4</option><option value="5">5 (só topo)</option></select></span>
+  </div>
+  <div id="expGrid-contador"></div>
+  <p style="margin-top:0.75rem;font-size:0.8rem;color:#a3a3a3">💡 Após esses 27 dias você terá coberto o conteúdo essencial. Os ~80 dias restantes até 06/09 são para <strong>simulados + revisões FSRS</strong>.</p>
 </div>
 <div id="prioridade-contador" class="view active">
 <div class="view-actions">
@@ -2114,6 +2102,20 @@ document.addEventListener('DOMContentLoaded', () => { expSetCargo('contador'); }
 <div class="tabs">
 <button class="tab active" onclick="showView('prioridade-tecnico', this)">📊 Prioridade por Disciplina</button>
 <button class="tab" onclick="showView('cronograma-tecnico', this)">📅 Cronograma 113d</button>
+<button class="tab" onclick="showView('express-tecnico', this)" style="color:#0ea5e9">🎯 Plano Express 27d</button>
+</div>
+<div id="express-tecnico" class="view" style="background:linear-gradient(135deg,#1e3a8a25 0%,#0c4a6e30 100%);border:2px solid #0ea5e9;border-radius:0.75rem;padding:1.25rem">
+  <div style="margin-bottom:0.75rem">
+    <h3 style="font-family:'Space Grotesk',sans-serif;font-size:1.1rem;color:#7dd3fc;margin-bottom:0.25rem">🎯 Plano Express 27 dias — Técnico Agente Social</h3>
+    <p style="font-size:0.85rem;color:#a3a3a3">Tópicos ordenados por <strong>score = relevância × peso</strong>. Distribuídos automaticamente nos próximos 27 dias (até ~12/06).</p>
+  </div>
+  <div style="display:flex;gap:1rem;flex-wrap:wrap;margin-bottom:1rem;font-size:0.85rem;color:#a3a3a3">
+    <span>📊 <span id="expTotalTopicos-tecnico">0</span> tópicos</span>
+    <span>📅 <span id="expSlotsPorDia-tecnico">0</span> tópicos/dia</span>
+    <span>🎓 Foco em relevância ≥ <select id="expMinRelev-tecnico" onchange="renderExpressPlan('tecnico')" style="background:#000;color:#7dd3fc;border:1px solid #0ea5e9;border-radius:4px;padding:2px 6px"><option value="1">1 (tudo)</option><option value="2">2</option><option value="3" selected>3 (recomendado)</option><option value="4">4</option><option value="5">5 (só topo)</option></select></span>
+  </div>
+  <div id="expGrid-tecnico"></div>
+  <p style="margin-top:0.75rem;font-size:0.8rem;color:#a3a3a3">💡 Após esses 27 dias você terá coberto o conteúdo essencial. Os ~80 dias restantes até 06/09 são para <strong>simulados + revisões FSRS</strong>.</p>
 </div>
 <div id="prioridade-tecnico" class="view active">
 <div class="view-actions">
