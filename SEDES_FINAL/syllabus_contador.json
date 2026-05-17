@@ -1,0 +1,48 @@
+[
+  { "id": "lp_01", "disciplina": "Língua Portuguesa", "nome": "1. Compreensão e Interpretação de Textos", "relevancia": 3, "peso": 1 },
+  { "id": "lp_02", "disciplina": "Língua Portuguesa", "nome": "2. Tipos e Gêneros Textuais", "relevancia": 2, "peso": 1 },
+  { "id": "lp_03", "disciplina": "Língua Portuguesa", "nome": "3. Ortografia Oficial", "relevancia": 3, "peso": 1 },
+  { "id": "lp_04", "disciplina": "Língua Portuguesa", "nome": "4. Coesão Textual (referenciação, conectores, tempos verbais)", "relevancia": 4, "peso": 1 },
+  { "id": "lp_05", "disciplina": "Língua Portuguesa", "nome": "5.1 Classes de Palavras", "relevancia": 3, "peso": 1 },
+  { "id": "lp_06", "disciplina": "Língua Portuguesa", "nome": "5.2/5.3 Coordenação e Subordinação", "relevancia": 4, "peso": 1 },
+  { "id": "lp_07", "disciplina": "Língua Portuguesa", "nome": "5.4 Pontuação", "relevancia": 4, "peso": 1 },
+  { "id": "lp_08", "disciplina": "Língua Portuguesa", "nome": "5.5/5.6 Concordância e Regência", "relevancia": 4, "peso": 1 },
+  { "id": "lp_09", "disciplina": "Língua Portuguesa", "nome": "5.7 Crase", "relevancia": 4, "peso": 1 },
+  { "id": "lp_10", "disciplina": "Língua Portuguesa", "nome": "5.8 Colocação Pronominal", "relevancia": 3, "peso": 1 },
+  { "id": "lp_11", "disciplina": "Língua Portuguesa", "nome": "6. Reescrita, Significação e Reorganização", "relevancia": 5, "peso": 1 },
+
+  { "id": "df_01", "disciplina": "Conhecimentos do DF e Legislação", "nome": "1. Realidade DF/RIDE (étnica, social, histórica, geográfica, econômica)", "relevancia": 2, "peso": 2 },
+  { "id": "df_02", "disciplina": "Conhecimentos do DF e Legislação", "nome": "2. Plano Distrital de Política para Mulheres (PDPM)", "relevancia": 3, "peso": 2 },
+  { "id": "df_03", "disciplina": "Conhecimentos do DF e Legislação", "nome": "3. Lei Orgânica do DF — Título VI", "relevancia": 3, "peso": 2 },
+  { "id": "df_04", "disciplina": "Conhecimentos do DF e Legislação", "nome": "4. LC 840/2011 (Estatuto Servidores DF) — Tít. I, V, VI, VII", "relevancia": 3, "peso": 2 },
+  { "id": "df_05", "disciplina": "Conhecimentos do DF e Legislação", "nome": "5. Lei 11.340/2006 (Maria da Penha) — mín. 3 questões garantidas", "relevancia": 5, "peso": 2 },
+  { "id": "df_06", "disciplina": "Conhecimentos do DF e Legislação", "nome": "6. Lei Distrital 7.484/2024", "relevancia": 4, "peso": 2 },
+  { "id": "df_07", "disciplina": "Conhecimentos do DF e Legislação", "nome": "7. Noções de Primeiros Socorros", "relevancia": 2, "peso": 2 },
+
+  { "id": "cg_01", "disciplina": "Contabilidade Geral e Societária", "nome": "1. Estrutura Conceitual e Normas Contábeis (CPC, IASB)", "relevancia": 3, "peso": 3 },
+  { "id": "cg_02", "disciplina": "Contabilidade Geral e Societária", "nome": "2. Receitas, Despesas, Ganhos, Perdas e Conceito de Lucro", "relevancia": 2, "peso": 3 },
+  { "id": "cg_03", "disciplina": "Contabilidade Geral e Societária", "nome": "3. Mensuração e Avaliação de Ativos, Passivos e PL", "relevancia": 3, "peso": 3 },
+  { "id": "cg_04", "disciplina": "Contabilidade Geral e Societária", "nome": "4. Evidenciação Contábil", "relevancia": 2, "peso": 3 },
+
+  { "id": "afab_01", "disciplina": "Adm. Financeira e Análise de Balanços", "nome": "1. Análise de Liquidez: conceitos, métodos e indicadores", "relevancia": 3, "peso": 2 },
+  { "id": "afab_02", "disciplina": "Adm. Financeira e Análise de Balanços", "nome": "2. Planejamento de Caixa e CGL", "relevancia": 3, "peso": 2 },
+  { "id": "afab_03", "disciplina": "Adm. Financeira e Análise de Balanços", "nome": "3. Gestão de Estoques e Valores a Receber", "relevancia": 2, "peso": 2 },
+  { "id": "afab_04", "disciplina": "Adm. Financeira e Análise de Balanços", "nome": "4. Risco x Rentabilidade e Gestão do Capital de Giro", "relevancia": 3, "peso": 2 },
+
+  { "id": "casp_01", "disciplina": "CASP", "nome": "1. Contabilidade Pública e seu Ambiente", "relevancia": 3, "peso": 3 },
+  { "id": "casp_02", "disciplina": "CASP", "nome": "2. MCASP — Manual de Contabilidade Pública", "relevancia": 5, "peso": 3 },
+  { "id": "casp_03", "disciplina": "CASP", "nome": "3. PCASP — Plano de Contas Aplicado ao Setor Público", "relevancia": 5, "peso": 3 },
+  { "id": "casp_04", "disciplina": "CASP", "nome": "4. DCASP — Demonstrações Contábeis e Análise", "relevancia": 4, "peso": 3 },
+  { "id": "casp_05", "disciplina": "CASP", "nome": "5. NBC TSP", "relevancia": 4, "peso": 3 },
+  { "id": "casp_06", "disciplina": "CASP", "nome": "6. Procedimentos Contábeis Orçamentários e Patrimoniais", "relevancia": 5, "peso": 3 },
+
+  { "id": "afo_01", "disciplina": "Orçamento Público e AFO", "nome": "1. Evolução Conceitual e Princípios Orçamentários", "relevancia": 3, "peso": 3 },
+  { "id": "afo_02", "disciplina": "Orçamento Público e AFO", "nome": "2. Lei 4.320/1964 e LRF (LC 101/2000)", "relevancia": 5, "peso": 3 },
+  { "id": "afo_03", "disciplina": "Orçamento Público e AFO", "nome": "3. PPA, LDO e LOA: estrutura e trâmite", "relevancia": 4, "peso": 3 },
+  { "id": "afo_04", "disciplina": "Orçamento Público e AFO", "nome": "4. Execução Orçamentária: estágios, créditos adicionais, RP", "relevancia": 5, "peso": 3 },
+
+  { "id": "aud_01", "disciplina": "Auditoria Contábil e Governamental", "nome": "1. Marco Legal, Princípios, Normas e Técnicas", "relevancia": 3, "peso": 3 },
+  { "id": "aud_02", "disciplina": "Auditoria Contábil e Governamental", "nome": "2. Controles Internos: planejamento, execução, avaliação", "relevancia": 2, "peso": 3 },
+  { "id": "aud_03", "disciplina": "Auditoria Contábil e Governamental", "nome": "3. Papéis de Trabalho, Pareceres e Relatórios", "relevancia": 2, "peso": 3 },
+  { "id": "aud_04", "disciplina": "Auditoria Contábil e Governamental", "nome": "4. Auditoria por Ciclos (receitas, compras, caixa, ativos)", "relevancia": 2, "peso": 3 }
+]

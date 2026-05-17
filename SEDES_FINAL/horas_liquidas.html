@@ -1,0 +1,625 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SEDES-DF · Horas Líquidas</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;700&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,400&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#0c0c0e;--bg2:#111115;--bg3:#16161b;--bg4:#1c1c23;--bg5:#222230;
+  --border:rgba(255,255,255,0.06);--border2:rgba(255,255,255,0.11);
+  --text:#f0f0f0;--text2:#999;--text3:#444;--text4:#2a2a2a;
+  --green:#00e676;--green2:#00b854;--green3:rgba(0,230,118,0.08);
+  --blue:#40c4ff;--red:#ff5252;--amber:#ffab40;--purple:#ce93d8;
+  --mono:'JetBrains Mono',monospace;--sans:'DM Sans',sans-serif;
+  --r:12px;--r2:8px;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%;overflow:hidden}
+body{background:var(--bg);color:var(--text);font-family:var(--sans);font-size:14px}
+body::before{content:'';position:fixed;inset:0;background:repeating-linear-gradient(0deg,transparent,transparent 2px,rgba(0,0,0,.07) 2px,rgba(0,0,0,.07) 4px);pointer-events:none;z-index:9998}
+.shell{display:grid;grid-template-columns:52px 1fr;grid-template-rows:100vh;height:100vh}
+.sidebar{background:var(--bg2);border-right:1px solid var(--border);display:flex;flex-direction:column;align-items:center;padding:16px 0;gap:4px;z-index:100}
+.sb-logo{font-family:var(--mono);font-size:9px;color:var(--green);letter-spacing:.12em;writing-mode:vertical-rl;transform:rotate(180deg);margin-bottom:12px;font-weight:700}
+.sb-btn{width:36px;height:36px;border-radius:var(--r2);border:1px solid transparent;background:transparent;color:var(--text3);cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .15s;font-size:16px;text-decoration:none}
+.sb-btn:hover{background:var(--bg4);color:var(--text2);border-color:var(--border)}
+.sb-btn.active{background:var(--green3);border-color:rgba(0,230,118,.25);color:var(--green)}
+.sb-sep{width:24px;height:1px;background:var(--border);margin:6px 0}
+.main{display:grid;grid-template-rows:48px 1fr;overflow:hidden}
+.topbar{background:var(--bg2);border-bottom:1px solid var(--border);display:flex;align-items:center;padding:0 20px;gap:16px}
+.topbar-title{font-family:var(--mono);font-size:11px;color:var(--text3);letter-spacing:.1em}
+.topbar-sep{width:1px;height:18px;background:var(--border)}
+.topbar-date{font-family:var(--mono);font-size:11px;color:var(--text3)}
+.topbar-right{margin-left:auto;display:flex;gap:8px;align-items:center}
+.top-tab{font-family:var(--mono);font-size:10px;letter-spacing:.1em;text-transform:uppercase;padding:4px 14px;border-radius:100px;border:1px solid var(--border);background:transparent;color:var(--text3);cursor:pointer;transition:all .15s;text-decoration:none}
+.top-tab:hover{color:var(--text2);border-color:var(--border2)}
+.top-tab.active{background:var(--green3);border-color:rgba(0,230,118,.3);color:var(--green)}
+.views{position:relative;overflow:hidden}
+.view{position:absolute;inset:0;overflow-y:auto;display:none}
+.view.active{display:block}
+.timer-layout{display:grid;grid-template-columns:1fr 280px;height:100%}
+.timer-left{padding:20px 24px;display:flex;flex-direction:column;gap:16px;overflow-y:auto;align-items:center}
+.timer-left>*{width:100%;max-width:680px}
+.timer-right{background:var(--bg2);border-left:1px solid var(--border);padding:20px;display:flex;flex-direction:column;gap:16px;overflow-y:auto}
+.clock-card{background:var(--bg2);border:1px solid var(--border);border-radius:var(--r);padding:18px 24px;text-align:center;position:relative;overflow:hidden}
+.clock-card.running{border-color:rgba(0,230,118,.2)}
+.clock-card.running::after{content:'';position:absolute;top:0;left:50%;transform:translateX(-50%);width:160px;height:1px;background:linear-gradient(90deg,transparent,var(--green),transparent)}
+.ring-wrap{position:relative;width:150px;height:150px;margin:0 auto 12px;cursor:pointer}
+.ring-svg{width:150px;height:150px;transform:rotate(-90deg)}
+.ring-track{fill:none;stroke:var(--bg4);stroke-width:5}
+.ring-progress{fill:none;stroke:var(--red);stroke-width:5;stroke-linecap:round;stroke-dasharray:440;stroke-dashoffset:0;transition:stroke-dashoffset 1s linear,stroke .3s}
+.ring-progress.focus{stroke:#ff5252}
+.ring-progress.break-ring{stroke:var(--blue)}
+.ring-center{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);text-align:center}
+.ring-time{font-family:var(--mono);font-size:30px;font-weight:300;line-height:1;color:var(--text);transition:color .3s}
+.ring-label{font-family:var(--mono);font-size:9px;letter-spacing:.16em;color:var(--text3);text-transform:uppercase;margin-top:4px}
+.ring-wrap:hover .ring-play-icon{opacity:1!important}
+.ring-play-icon{font-size:28px;color:var(--red);margin-top:6px;opacity:0;transition:opacity .2s;line-height:1}
+.phase-pill{display:inline-flex;align-items:center;gap:5px;font-family:var(--mono);font-size:10px;letter-spacing:.1em;text-transform:uppercase;padding:3px 12px;border-radius:100px;border:1px solid rgba(255,82,82,.25);color:var(--red);background:rgba(255,82,82,.07);margin-bottom:16px}
+.phase-pill.break{border-color:rgba(64,196,255,.25);color:var(--blue);background:rgba(64,196,255,.07)}
+.pdot-anim{width:5px;height:5px;border-radius:50%;background:currentColor}
+.pdot-anim.pulse{animation:pulse 1.2s ease-in-out infinite}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.25}}
+.subj-sel-row{display:flex;align-items:center;gap:8px;justify-content:center;margin-bottom:16px}
+.subj-sel-row label{font-size:12px;color:var(--text3)}
+select.dark{background:var(--bg4);border:1px solid var(--border);color:var(--text);border-radius:var(--r2);padding:6px 12px;font-family:var(--sans);font-size:13px;outline:none;min-width:180px}
+.dur-row{display:flex;gap:5px;justify-content:center}
+.dur-btn{font-family:var(--mono);font-size:10px;letter-spacing:.07em;padding:3px 12px;border-radius:100px;border:1px solid var(--border);background:transparent;color:var(--text3);cursor:pointer;transition:all .15s}
+.dur-btn:hover{color:var(--text2)}
+.dur-btn.act{border-color:rgba(255,82,82,.3);color:var(--red);background:rgba(255,82,82,.07)}
+.ring-row{display:flex;align-items:center;justify-content:center;gap:16px;margin-bottom:4px}
+.ring-side-btn{width:38px;height:38px;border-radius:50%;background:var(--bg4);border:1px solid var(--border2);color:var(--text3);font-size:15px;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .15s;flex-shrink:0}
+.ring-side-btn:hover{background:var(--bg5);color:var(--text)}
+.subj-panel{background:var(--bg2);border:1px solid var(--border);border-radius:var(--r);padding:20px}
+.sec-title{font-family:var(--mono);font-size:9px;letter-spacing:.16em;text-transform:uppercase;color:var(--text3);margin-bottom:12px;display:flex;align-items:center;justify-content:space-between}
+.subj-list{display:flex;flex-direction:column;gap:2px}
+.srow{display:grid;grid-template-columns:8px 1fr auto 72px 16px 16px;align-items:center;gap:8px;padding:7px 8px;border-radius:6px;cursor:pointer;border:1px solid transparent;transition:all .15s}
+.srow:hover{background:var(--bg4)}
+.srow.sel{background:rgba(255,82,82,.04);border-color:rgba(255,82,82,.15)}
+.sdot{width:7px;height:7px;border-radius:50%}
+.sname{font-size:12px;color:var(--text2)}
+.srow.sel .sname{color:var(--text)}
+.stime{font-family:var(--mono);font-size:11px;color:var(--text3);text-align:right}
+.srow.sel .stime{color:var(--text2)}
+.sbar-wrap{height:2px;background:var(--bg4);border-radius:2px;overflow:hidden}
+.sbar{height:2px;border-radius:2px}
+.sdel{font-size:13px;color:var(--text4);cursor:pointer;opacity:0;transition:opacity .15s;text-align:center}
+.srow:hover .sdel{opacity:1}
+.sdel:hover{color:var(--red)}
+.sedit{font-size:12px;color:var(--text4);cursor:pointer;opacity:0;transition:opacity .15s;text-align:center}
+.srow:hover .sedit{opacity:1}
+.sedit:hover{color:var(--amber)}
+.sinput{background:var(--bg3);border:1px solid var(--amber);color:var(--text);border-radius:4px;padding:2px 6px;font-family:var(--sans);font-size:12px;width:100%;outline:none}
+.add-row{display:flex;gap:6px;margin-top:10px}
+input.dark{background:var(--bg4);border:1px solid var(--border);color:var(--text);border-radius:var(--r2);padding:7px 12px;font-family:var(--sans);font-size:13px;flex:1;outline:none}
+.add-btn{background:var(--bg4);border:1px solid var(--border);color:var(--text3);border-radius:var(--r2);padding:7px 14px;font-size:13px;cursor:pointer;white-space:nowrap;transition:all .15s}
+.add-btn:hover{color:var(--text);border-color:var(--border2)}
+.stat-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.stat-c{background:var(--bg3);border:1px solid var(--border);border-radius:var(--r2);padding:12px}
+.stat-lbl{font-family:var(--mono);font-size:9px;letter-spacing:.14em;text-transform:uppercase;color:var(--text3);margin-bottom:5px}
+.stat-val{font-family:var(--mono);font-size:20px;font-weight:300;color:var(--text);line-height:1}
+.stat-sub{font-size:11px;color:var(--text3);margin-top:3px}
+.divider{border:none;border-top:1px solid var(--border)}
+.pomo-wrap{display:flex;flex-wrap:wrap;gap:4px}
+.pm{width:8px;height:8px;border-radius:50%;background:var(--bg5);border:1px solid var(--border)}
+.pm.done{background:var(--red);border-color:rgba(255,82,82,.5)}
+.hist-list{display:flex;flex-direction:column;gap:1px}
+.hrow{display:flex;align-items:center;gap:6px;padding:5px 6px;border-radius:5px}
+.hrow:hover{background:var(--bg3)}
+.hname{flex:1;font-size:12px;color:var(--text3);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:110px}
+.hdur{font-family:var(--mono);font-size:11px;color:var(--red)}
+.htime{font-family:var(--mono);font-size:10px;color:var(--text4);margin-left:auto}
+.reset-lnk{font-family:var(--mono);font-size:9px;letter-spacing:.1em;text-transform:uppercase;color:var(--text3);background:none;border:none;cursor:pointer;text-decoration:underline;text-align:center;display:block;width:100%;padding:4px;margin-top:auto}
+.reset-lnk:hover{color:var(--red)}
+.btn{font-family:var(--mono);font-size:11px;letter-spacing:.07em;text-transform:uppercase;padding:9px 22px;border-radius:var(--r2);border:1px solid var(--border2);background:var(--bg4);color:var(--text2);cursor:pointer;transition:all .15s}
+.btn:hover{color:var(--text);border-color:rgba(255,255,255,.18)}
+.dash-wrap{padding:28px;max-width:900px}
+.dash-h{font-family:var(--mono);font-size:10px;letter-spacing:.16em;text-transform:uppercase;color:var(--text3);margin-bottom:20px}
+.dash-stats{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:24px}
+.dsc{background:var(--bg2);border:1px solid var(--border);border-radius:var(--r);padding:18px}
+.dsc-lbl{font-family:var(--mono);font-size:9px;letter-spacing:.14em;text-transform:uppercase;color:var(--text3);margin-bottom:6px}
+.dsc-val{font-family:var(--mono);font-size:28px;font-weight:300;color:var(--text);line-height:1}
+.dsc-sub{font-size:11px;color:var(--text3);margin-top:5px}
+.bars-card{background:var(--bg2);border:1px solid var(--border);border-radius:var(--r);padding:20px;margin-bottom:16px}
+.brow{display:flex;align-items:center;gap:12px;margin-bottom:8px}
+.brow:last-child{margin-bottom:0}
+.bname{font-size:12px;color:var(--text2);min-width:180px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.btrack{flex:1;background:var(--bg4);border-radius:2px;height:4px;overflow:hidden}
+.bfill{height:4px;border-radius:2px;transition:width .6s cubic-bezier(.4,0,.2,1)}
+.btime{font-family:var(--mono);font-size:11px;color:var(--text3);min-width:52px;text-align:right}
+.hist-table{background:var(--bg2);border:1px solid var(--border);border-radius:var(--r);overflow:hidden}
+.hist-table table{width:100%;border-collapse:collapse}
+.hist-table th{font-family:var(--mono);font-size:9px;letter-spacing:.12em;text-transform:uppercase;color:var(--text3);padding:10px 16px;background:var(--bg3);text-align:left;border-bottom:1px solid var(--border)}
+.hist-table td{padding:9px 16px;font-size:12px;border-bottom:1px solid var(--border);color:var(--text2)}
+.hist-table tr:last-child td{border-bottom:none}
+.td-m{font-family:var(--mono);font-size:11px}
+.td-r{color:var(--red);font-weight:500}
+.cargo-toggle{display:flex;gap:4px;padding:4px;background:var(--bg3);border-radius:var(--r2);margin-bottom:12px}
+.cargo-toggle-btn{flex:1;background:transparent;border:none;color:var(--text3);font-family:var(--mono);font-size:10px;letter-spacing:.08em;padding:6px 8px;border-radius:6px;cursor:pointer;text-transform:uppercase}
+.cargo-toggle-btn.act{background:var(--bg4);color:var(--text)}
+@media(max-width:720px){
+  .shell{grid-template-columns:1fr}
+  .sidebar{display:none}
+  .timer-layout{grid-template-columns:1fr}
+  .timer-right{border-left:none;border-top:1px solid var(--border)}
+  .dash-stats{grid-template-columns:1fr 1fr}
+}
+</style>
+</head>
+<body>
+<div class="shell">
+  <div class="sidebar">
+    <span class="sb-logo">HL</span>
+    <button class="sb-btn active" id="sb0" onclick="showView('timer')" title="Timer">⏱</button>
+    <button class="sb-btn" id="sb1" onclick="showView('dash')" title="Dashboard">◫</button>
+    <div class="sb-sep"></div>
+    <a class="sb-btn" href="prioridade.html" title="Voltar ao Painel SEDES" style="color:var(--amber)">←</a>
+  </div>
+  <div class="main">
+    <div class="topbar">
+      <span class="topbar-title">SEDES-DF · HORA DO FOCO</span>
+      <div class="topbar-sep"></div>
+      <span class="topbar-date" id="top-date"></span>
+      <div class="topbar-right">
+        <a class="top-tab" href="prioridade.html" style="color:var(--amber);border-color:rgba(255,171,64,.3)">← Painel</a>
+        <button class="top-tab active" id="tt0" onclick="showView('timer')">Timer</button>
+        <button class="top-tab" id="tt1" onclick="showView('dash')">Dashboard</button>
+      </div>
+    </div>
+    <div class="views">
+
+      <div class="view active" id="v-timer">
+        <div class="timer-layout">
+          <div class="timer-left">
+            <div class="clock-card" id="clock-card">
+              <div class="phase-pill" id="phase-pill">
+                <div class="pdot-anim" id="pdot"></div>
+                <span id="phase-txt">Foco — 25 min</span>
+              </div>
+              <div class="ring-row">
+                <button class="ring-side-btn" onclick="resetTimer()" title="Resetar">↺</button>
+                <div class="ring-wrap" onclick="toggleTimer()" title="Clique para iniciar/pausar">
+                  <svg class="ring-svg" viewBox="0 0 150 150">
+                    <circle class="ring-track" cx="75" cy="75" r="70"/>
+                    <circle class="ring-progress focus" id="ring" cx="75" cy="75" r="70"/>
+                  </svg>
+                  <div class="ring-center">
+                    <div class="ring-time" id="ring-time">25:00</div>
+                    <div class="ring-label" id="ring-lbl">PAUSADO</div>
+                    <div class="ring-play-icon" id="ring-play-icon">▶</div>
+                  </div>
+                </div>
+                <button class="ring-side-btn" onclick="skipPhase()" title="Pular fase">↷</button>
+              </div>
+              <div class="subj-sel-row">
+                <label>Matéria</label>
+                <select class="dark" id="cur-subj"></select>
+              </div>
+              <div class="dur-row">
+                <button class="dur-btn act" id="d25" onclick="setDur(25)">25 min</button>
+                <button class="dur-btn" id="d45" onclick="setDur(45)">45 min</button>
+                <button class="dur-btn" id="d50" onclick="setDur(50)">50 min</button>
+              </div>
+            </div>
+            <div class="subj-panel">
+              <div class="sec-title">
+                <span>Matérias do edital SEDES-DF</span>
+                <span style="display:flex;gap:8px;align-items:center">
+                  <span id="subj-count" style="font-size:10px;color:var(--text3)"></span>
+                  <button onclick="restoreDefaults()" style="font-family:var(--mono);font-size:9px;color:var(--text3);background:none;border:none;cursor:pointer;text-decoration:underline;letter-spacing:.06em" title="Restaurar matérias do edital">↺ padrão</button>
+                </span>
+              </div>
+              <div class="cargo-toggle">
+                <button class="cargo-toggle-btn act" id="cgall" onclick="setFilter('all')">Todas</button>
+                <button class="cargo-toggle-btn" id="cgcont" onclick="setFilter('contador')">Contador</button>
+                <button class="cargo-toggle-btn" id="cgtec" onclick="setFilter('tecnico')">Técnico</button>
+                <button class="cargo-toggle-btn" id="cgcom" onclick="setFilter('comum')">Comuns</button>
+              </div>
+              <div class="subj-list" id="subj-list"></div>
+              <div class="add-row">
+                <input class="dark" id="new-subj" placeholder="Nova matéria..."/>
+                <button class="add-btn" onclick="addSubj()">+ Add</button>
+              </div>
+            </div>
+          </div>
+          <div class="timer-right">
+            <div>
+              <div class="sec-title" style="margin-bottom:10px">Horas líquidas</div>
+              <div class="stat-grid">
+                <div class="stat-c">
+                  <div class="stat-lbl">Hoje</div>
+                  <div class="stat-val" id="s-hoje">0h 00</div>
+                  <div class="stat-sub" id="s-hoje-sub">0 pomodoros</div>
+                </div>
+                <div class="stat-c">
+                  <div class="stat-lbl">Total</div>
+                  <div class="stat-val" id="s-total">0h 00</div>
+                  <div class="stat-sub" id="s-total-sub">0 sessões</div>
+                </div>
+              </div>
+            </div>
+            <hr class="divider">
+            <div>
+              <div class="sec-title" style="margin-bottom:8px">Pomodoros hoje</div>
+              <div class="pomo-wrap" id="pomo-dots"></div>
+            </div>
+            <hr class="divider">
+            <div style="flex:1">
+              <div class="sec-title" style="margin-bottom:8px">Últimas sessões</div>
+              <div class="hist-list" id="hist-list"></div>
+            </div>
+            <div style="display:flex;flex-direction:column;gap:6px;margin-top:auto">
+              <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px">
+                <button class="btn" style="font-size:10px;padding:7px 8px" onclick="exportExcel()" title="Exportar para Excel">↓ Excel</button>
+                <button class="btn" style="font-size:10px;padding:7px 8px" onclick="exportBackup()" title="Salvar backup JSON">↓ Backup</button>
+              </div>
+              <label class="btn" style="font-size:10px;padding:7px 8px;text-align:center;cursor:pointer">
+                ↑ Restaurar
+                <input type="file" accept=".json" id="import-inp" style="display:none" onchange="importBackup(event)"/>
+              </label>
+              <button class="reset-lnk" onclick="resetAll()">Zerar todos os dados</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="view" id="v-dash">
+        <div class="dash-wrap">
+          <div class="dash-h">Dashboard — Horas SEDES-DF 2026</div>
+          <div class="dash-stats">
+            <div class="dsc">
+              <div class="dsc-lbl">Total acumulado</div>
+              <div class="dsc-val" id="d-total">0h 00</div>
+              <div class="dsc-sub" id="d-total-s">0 sessões</div>
+            </div>
+            <div class="dsc">
+              <div class="dsc-lbl">Hoje</div>
+              <div class="dsc-val" id="d-hoje">0h 00</div>
+              <div class="dsc-sub" id="d-hoje-s">0 pomodoros</div>
+            </div>
+            <div class="dsc">
+              <div class="dsc-lbl">Meta diária</div>
+              <div class="dsc-val" id="d-meta-pct" style="font-size:28px">—</div>
+              <div class="dsc-sub" style="display:flex;align-items:center;gap:4px">
+                <input id="meta-inp" class="dark" style="width:58px;padding:2px 6px;font-size:11px" placeholder="min" oninput="saveMeta()"/>
+                <span style="font-size:11px;color:var(--text3)">min/dia</span>
+              </div>
+            </div>
+            <div class="dsc">
+              <div class="dsc-lbl">Prova SEDES</div>
+              <div class="dsc-val" id="d-dias" style="font-size:28px">—</div>
+              <div class="dsc-sub">06/09/2026</div>
+            </div>
+          </div>
+          <div class="bars-card">
+            <div class="sec-title" style="margin-bottom:14px">Horas por matéria</div>
+            <div id="d-bars"></div>
+          </div>
+          <div class="hist-table">
+            <table>
+              <thead><tr><th>Matéria</th><th>Duração</th><th>Horário</th></tr></thead>
+              <tbody id="d-hist"></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+const C=['#ff5252','#40c4ff','#ffab40','#ce93d8','#69f0ae','#ff4081','#80cbc4','#fff176','#ef9a9a','#80deea','#a5d6a7','#ffe082','#f48fb1','#90caf9','#a5d6a7','#fff59d','#ffcc80'];
+
+// === DEFAULT SUBJECTS por cargo (matérias do edital SEDES-DF 2026) ===
+const DEFAULT_SUBJECTS=[
+  // Comuns (ambos cargos)
+  {name:'Língua Portuguesa',min:0,grupo:'comum'},
+  {name:'Conhecimentos do DF',min:0,grupo:'comum'},
+  {name:'Lei 11.340 (Maria da Penha)',min:0,grupo:'comum'},
+  {name:'Lei Distrital 7.484/2024',min:0,grupo:'comum'},
+  {name:'LC 840/2011 (Estatuto)',min:0,grupo:'comum'},
+  // Contador (Específicas)
+  {name:'Contabilidade Geral e Societária',min:0,grupo:'contador'},
+  {name:'Adm. Financeira e Análise de Balanços',min:0,grupo:'contador'},
+  {name:'CASP — Contabilidade Setor Público',min:0,grupo:'contador'},
+  {name:'Orçamento Público e AFO',min:0,grupo:'contador'},
+  {name:'Auditoria Contábil e Governamental',min:0,grupo:'contador'},
+  // Técnico (Específicas)
+  {name:'Fundamentos do SUAS',min:0,grupo:'tecnico'},
+  {name:'Programas Socioassistenciais DF',min:0,grupo:'tecnico'},
+  {name:'Específicos Agente Social',min:0,grupo:'tecnico'},
+];
+
+const STORAGE_KEY='hl_sedes_df_2026';
+const PROVA_DATE='2026-09-06';
+
+let S={subjects:[],todayMin:0,totalMin:0,todayPomos:0,totalSessions:0,history:[],dur:25,meta:0,filter:'all'};
+let running=false,isBreak=false,secs=25*60,timer=null,sessStart=null;
+
+function load(){
+  try{
+    const raw=localStorage.getItem(STORAGE_KEY);
+    if(raw){
+      const p=JSON.parse(raw);
+      const today=new Date().toDateString();
+      if(p.lastDate!==today){p.todayMin=0;p.todayPomos=0;}
+      S={...S,...p};
+    }
+  }catch(e){console.warn('Erro:',e);}
+  if(!Array.isArray(S.subjects)||S.subjects.length===0){
+    S.subjects=DEFAULT_SUBJECTS.map(s=>({...s}));
+  }
+  S.subjects=S.subjects.map(s=>({name:s.name||'Sem nome',min:typeof s.min==='number'?s.min:0,grupo:s.grupo||'comum'}));
+  S.todayMin=Number(S.todayMin)||0;S.totalMin=Number(S.totalMin)||0;
+  S.todayPomos=Number(S.todayPomos)||0;S.totalSessions=Number(S.totalSessions)||0;
+  S.dur=Number(S.dur)||25;
+  if(!Array.isArray(S.history))S.history=[];
+  if(!S.filter)S.filter='all';
+  secs=S.dur*60;
+  const mi=document.getElementById('meta-inp');if(mi&&S.meta)mi.value=S.meta;
+}
+function save(){S.lastDate=new Date().toDateString();try{localStorage.setItem(STORAGE_KEY,JSON.stringify(S));}catch(e){}}
+function fmt(m){const h=Math.floor(m/60);return h+'h '+String(m%60).padStart(2,'0');}
+function fmtClock(s){return String(Math.floor(s/60)).padStart(2,'0')+':'+String(s%60).padStart(2,'0');}
+function daysUntil(d){const t=new Date(d+'T00:00:00');const n=new Date();n.setHours(0,0,0,0);return Math.max(0,Math.round((t-n)/86400000));}
+
+function setFilter(f){S.filter=f;save();['all','contador','tecnico','comum'].forEach(k=>{const el=document.getElementById('cg'+(k==='all'?'all':k==='comum'?'com':k.slice(0,4)));if(el)el.className='cargo-toggle-btn'+(f===k?' act':'');});renderSubjects();}
+
+function renderClock(){
+  const total=(isBreak?5:S.dur)*60;const pct=Math.round(secs/total*100);
+  const el=document.getElementById('ring');
+  if(el){el.style.strokeDashoffset=440*(1-pct/100);el.className='ring-progress '+(isBreak?'break-ring':'focus');el.style.stroke=isBreak?'var(--green)':'var(--red)';}
+  const rt=document.getElementById('ring-time');if(rt){rt.textContent=fmtClock(secs);rt.style.color=running&&isBreak?'var(--green)':running&&!isBreak?'var(--red)':'var(--text)';}
+  const rl=document.getElementById('ring-lbl');if(rl){rl.textContent=running?(isBreak?'PAUSA':'FOCUS'):'PAUSADO';}
+  const cc=document.getElementById('clock-card');if(cc)cc.className='clock-card'+(running&&!isBreak?' running':'');
+  const pp=document.getElementById('phase-pill');if(pp)pp.className='phase-pill'+(isBreak?' break':'');
+  const pd=document.getElementById('pdot');if(pd)pd.className='pdot-anim'+(running?' pulse':'');
+  const ptxt=document.getElementById('phase-txt');if(ptxt)ptxt.textContent=isBreak?'Pausa — 5 min':'Foco — '+S.dur+' min';
+  const pi=document.getElementById('ring-play-icon');if(pi){pi.textContent=running?'⏸':'▶';pi.style.color=isBreak?'var(--green)':'var(--red)';pi.style.opacity=running?'0.7':'0';}
+}
+
+function renderStats(){
+  document.getElementById('s-hoje').textContent=fmt(S.todayMin);
+  document.getElementById('s-hoje-sub').textContent=S.todayPomos+' pomodoro'+(S.todayPomos!==1?'s':'');
+  document.getElementById('s-total').textContent=fmt(S.totalMin);
+  document.getElementById('s-total-sub').textContent=S.totalSessions+' sessões';
+  const dots=document.getElementById('pomo-dots');const n=Math.max(S.todayPomos,6);
+  dots.innerHTML=Array.from({length:n},(_,i)=>'<div class="pm'+(i<S.todayPomos?' done':'')+'"></div>').join('');
+}
+
+function getFiltered(){
+  if(S.filter==='all')return S.subjects.map((s,i)=>({...s,_i:i}));
+  return S.subjects.map((s,i)=>({...s,_i:i})).filter(s=>s.grupo===S.filter);
+}
+
+function renderSubjects(){
+  const sel=document.getElementById('cur-subj');
+  const prev=sel.value;
+  const filt=getFiltered();
+  sel.innerHTML=filt.map(s=>'<option value="'+s._i+'">'+s.name+'</option>').join('');
+  if(prev!==''&&filt.find(s=>s._i==parseInt(prev)))sel.value=prev;
+  document.getElementById('subj-count').textContent=filt.length+' de '+S.subjects.length;
+  const max=Math.max(...S.subjects.map(s=>s.min),1);
+  const si=parseInt(sel.value);
+  document.getElementById('subj-list').innerHTML=filt.map(s=>{
+    const pct=Math.round(s.min/max*100);const col=C[s._i%C.length];
+    return '<div class="srow'+(s._i===si?' sel':'')+'" onclick="selSubj('+s._i+')">'+
+      '<div class="sdot" style="background:'+col+'"></div>'+
+      '<span class="sname">'+s.name+'</span>'+
+      '<span class="stime">'+fmt(s.min)+'</span>'+
+      '<div class="sbar-wrap"><div class="sbar" style="width:'+pct+'%;background:'+col+'"></div></div>'+
+      '<span class="sedit" onclick="event.stopPropagation();editSubj('+s._i+')" title="Renomear">✎</span>'+
+      '<span class="sdel" onclick="event.stopPropagation();delSubj('+s._i+')">×</span>'+
+    '</div>';
+  }).join('');
+}
+
+function selSubj(i){document.getElementById('cur-subj').value=i;renderSubjects();}
+
+function renderHistory(){
+  const el=document.getElementById('hist-list');
+  if(!S.history.length){el.innerHTML='<div style="font-size:12px;color:var(--text3);padding:6px 0">Nenhuma sessão ainda</div>';return;}
+  el.innerHTML=[...S.history].reverse().slice(0,10).map(h=>
+    '<div class="hrow"><span class="hname">'+h.subj+'</span><span class="hdur">'+h.dur+'min</span><span class="htime">'+h.time+'</span></div>'
+  ).join('');
+}
+
+function renderDashboard(){
+  const liveMin=(running&&sessStart&&!isBreak)?Math.floor((Date.now()-sessStart)/60000)-(S._lastRecMin||0):0;
+  const liveLabel=liveMin>0?' +'+liveMin+'min ao vivo':'';
+  document.getElementById('d-total').textContent=fmt(S.totalMin+liveMin);
+  document.getElementById('d-total-s').textContent=S.totalSessions+' sessões'+liveLabel;
+  document.getElementById('d-hoje').textContent=fmt(S.todayMin+liveMin);
+  document.getElementById('d-hoje-s').textContent=S.todayPomos+' pomodoros'+liveLabel;
+  const meta=S.meta||0;
+  const pct=meta>0?Math.min(Math.round(S.todayMin/meta*100),999):0;
+  const mpEl=document.getElementById('d-meta-pct');
+  mpEl.textContent=meta>0?pct+'%':'—';
+  mpEl.style.color=pct>=100?'var(--green)':pct>=50?'var(--amber)':'var(--text)';
+  document.getElementById('d-dias').textContent=daysUntil(PROVA_DATE);
+  const curIdx=running&&sessStart&&!isBreak?parseInt(document.getElementById('cur-subj').value)||0:-1;
+  const liveForSubj=(running&&sessStart&&!isBreak)?Math.floor((Date.now()-sessStart)/60000)-(S._lastRecMin||0):0;
+  const swl=S.subjects.map((s,i)=>({...s,min:s.min+(i===curIdx?liveForSubj:0)}));
+  const max=Math.max(...swl.map(s=>s.min),1);
+  const sorted=[...swl].map((s,i)=>({...s,_i:i})).sort((a,b)=>b.min-a.min);
+  document.getElementById('d-bars').innerHTML=sorted.map(s=>{
+    const col=C[s._i%C.length];const pct=Math.round(s.min/max*100);
+    const isLive=s._i===curIdx&&liveForSubj>0;
+    return '<div class="brow"><span class="bname">'+s.name+(isLive?' <span style="font-size:9px;color:var(--green);font-family:var(--mono)">● AO VIVO</span>':'')+'</span><div class="btrack"><div class="bfill" style="width:'+pct+'%;background:'+col+(isLive?';box-shadow:0 0 6px '+col:'')+'"></div></div><span class="btime">'+fmt(s.min)+'</span></div>';
+  }).join('');
+  const tbody=document.getElementById('d-hist');
+  if(!S.history.length){tbody.innerHTML='<tr><td colspan="3" style="color:var(--text3);text-align:center;padding:20px">Nenhuma sessão</td></tr>';return;}
+  tbody.innerHTML=[...S.history].reverse().slice(0,40).map(h=>
+    '<tr><td>'+h.subj+'</td><td class="td-m td-r">'+h.dur+' min</td><td class="td-m">'+h.time+'</td></tr>'
+  ).join('');
+}
+
+function record(mins){
+  if(mins<=0)return;
+  const i=parseInt(document.getElementById('cur-subj').value)||0;
+  const name=S.subjects[i]?S.subjects[i].name:'Geral';
+  S.subjects[i].min+=mins;S.todayMin+=mins;S.totalMin+=mins;
+  if(mins>=S.dur){
+    S.todayPomos++;S.totalSessions++;
+    const t=new Date();
+    S.history.push({subj:name,dur:mins,time:t.toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit'})});
+    if(S.history.length>100)S.history=S.history.slice(-100);
+  }
+  save();renderStats();renderSubjects();renderHistory();
+}
+
+function toggleTimer(){
+  if(running){
+    clearInterval(timer);running=false;
+    if(sessStart&&!isBreak){
+      const e=Math.floor((Date.now()-sessStart)/1000);
+      const m=e>=30?Math.max(1,Math.round(e/60)):0;
+      if(m>0)record(m);
+    }
+    sessStart=null;
+  }else{
+    running=true;sessStart=Date.now();S._lastRecMin=0;
+    timer=setInterval(tick,1000);
+  }
+  renderClock();
+}
+
+function tick(){
+  secs--;
+  if(!isBreak&&sessStart){
+    const elapsed=Math.floor((Date.now()-sessStart)/60000);
+    if(elapsed>0&&elapsed>S._lastRecMin){record(1);S._lastRecMin=elapsed;}
+  }
+  if(secs<=0){
+    clearInterval(timer);running=false;
+    if(!isBreak){
+      const rem=S.dur-(S._lastRecMin||0);
+      if(rem>0)record(rem);
+      S._lastRecMin=0;sessStart=null;
+      isBreak=true;secs=5*60;
+      setTimeout(()=>{running=true;sessStart=Date.now();S._lastRecMin=0;timer=setInterval(tick,1000);renderClock();},500);
+    }else{isBreak=false;secs=S.dur*60;sessStart=null;S._lastRecMin=0;}
+  }
+  renderClock();
+}
+
+function skipPhase(){
+  clearInterval(timer);
+  if(running&&sessStart&&!isBreak){
+    const rem=Math.floor((Date.now()-sessStart)/60000)-(S._lastRecMin||0);
+    if(rem>0)record(rem);
+  }
+  S._lastRecMin=0;running=false;sessStart=null;
+  isBreak=!isBreak;secs=(isBreak?5:S.dur)*60;renderClock();
+}
+
+function resetTimer(){clearInterval(timer);running=false;isBreak=false;sessStart=null;S._lastRecMin=0;secs=S.dur*60;renderClock();}
+
+function setDur(d){
+  if(running)return;
+  S.dur=d;secs=d*60;save();
+  ['d25','d45','d50'].forEach(id=>{document.getElementById(id).className='dur-btn';});
+  document.getElementById('d'+d).className='dur-btn act';renderClock();
+}
+
+function editSubj(i){
+  const rows=document.getElementById('subj-list').querySelectorAll('.srow');
+  let row=null;rows.forEach(r=>{if(r.outerHTML.indexOf('selSubj('+i+')')>0)row=r;});
+  if(!row)row=rows[i];if(!row)return;
+  const nameEl=row.querySelector('.sname');const cur=S.subjects[i].name;
+  const inp=document.createElement('input');inp.className='sinput';inp.value=cur;inp.style.gridColumn='2';
+  nameEl.replaceWith(inp);inp.focus();inp.select();
+  function commit(){
+    const v=inp.value.trim();
+    if(v&&v!==cur){
+      S.history=S.history.map(h=>h.subj===cur?{...h,subj:v}:h);
+      S.subjects[i].name=v;save();
+    }
+    renderSubjects();
+  }
+  inp.addEventListener('blur',commit);
+  inp.addEventListener('keydown',e=>{if(e.key==='Enter')inp.blur();if(e.key==='Escape'){inp.value=cur;inp.blur();}});
+}
+
+function restoreDefaults(){
+  if(S.subjects.length>0&&!confirm('Adiciona matérias padrão do edital SEDES mantendo as que você já tem. Confirmar?'))return;
+  DEFAULT_SUBJECTS.forEach(def=>{if(!S.subjects.find(s=>s.name===def.name))S.subjects.push({...def});});
+  save();renderSubjects();
+}
+
+function addSubj(){
+  const inp=document.getElementById('new-subj');
+  const n=inp.value.trim();if(!n)return;
+  S.subjects.push({name:n,min:0,grupo:'comum'});inp.value='';save();renderSubjects();
+}
+document.getElementById('new-subj').addEventListener('keydown',e=>{if(e.key==='Enter')addSubj();});
+
+function delSubj(i){if(!confirm('Remover "'+S.subjects[i].name+'"?'))return;S.subjects.splice(i,1);save();renderSubjects();}
+
+function resetAll(){
+  if(!confirm('Zerar todos os dados?'))return;
+  clearInterval(timer);running=false;isBreak=false;sessStart=null;
+  S={subjects:DEFAULT_SUBJECTS.map(s=>({...s})),todayMin:0,totalMin:0,todayPomos:0,totalSessions:0,history:[],dur:25,meta:S.meta||0,filter:'all'};
+  secs=25*60;save();renderClock();renderStats();renderSubjects();renderHistory();
+}
+
+function saveMeta(){S.meta=parseInt(document.getElementById('meta-inp').value)||0;save();}
+
+function showView(v){
+  ['timer','dash'].forEach((n,i)=>{
+    document.getElementById('v-'+n).className='view'+(v===n?' active':'');
+    document.getElementById('tt'+i).className='top-tab'+(v===n?' active':'');
+    document.getElementById('sb'+i).className='sb-btn'+(v===n?' active':'');
+  });
+  if(v==='dash')renderDashboard();
+}
+
+function exportExcel(){
+  const bom='﻿';
+  let csv='Matéria;Duração (min);Horário\n';
+  if(S.history.length)[...S.history].reverse().forEach(h=>{csv+='"'+h.subj+'";'+h.dur+';"'+h.time+'"\n';});
+  csv+='\nResumo por matéria\nMatéria;Total (min);Total formatado\n';
+  S.subjects.forEach(s=>{csv+='"'+s.name+'";'+s.min+';"'+fmt(s.min)+'"\n';});
+  csv+='\nTotal geral;'+S.totalMin+';"'+fmt(S.totalMin)+'"\nSessões totais;'+S.totalSessions+';\n';
+  const blob=new Blob([bom+csv],{type:'text/csv;charset=utf-8'});
+  const a=document.createElement('a');a.href=URL.createObjectURL(blob);
+  a.download='sedes_horas_'+new Date().toISOString().slice(0,10)+'.csv';a.click();URL.revokeObjectURL(a.href);
+}
+
+function exportBackup(){
+  const data=JSON.stringify({...S,exportedAt:new Date().toISOString()},null,2);
+  const blob=new Blob([data],{type:'application/json'});
+  const a=document.createElement('a');a.href=URL.createObjectURL(blob);
+  a.download='sedes_backup_'+new Date().toISOString().slice(0,10)+'.json';a.click();URL.revokeObjectURL(a.href);
+}
+
+function importBackup(e){
+  const file=e.target.files[0];if(!file)return;
+  const r=new FileReader();
+  r.onload=ev=>{
+    try{
+      const d=JSON.parse(ev.target.result);
+      if(!d.subjects||!Array.isArray(d.subjects)){alert('Arquivo inválido.');return;}
+      if(!confirm('Substituir todos os dados pelo backup?'))return;
+      clearInterval(timer);running=false;isBreak=false;sessStart=null;
+      S={...S,...d};secs=S.dur*60;save();
+      renderClock();renderStats();renderSubjects();renderHistory();
+      alert('Backup restaurado!');
+    }catch(err){alert('Erro: '+err.message);}
+  };
+  r.readAsText(file);e.target.value='';
+}
+
+function updateDate(){const d=new Date();document.getElementById('top-date').textContent=d.toLocaleDateString('pt-BR',{weekday:'long',day:'2-digit',month:'long',year:'numeric'});}
+
+load();
+renderClock();renderStats();renderSubjects();renderHistory();updateDate();
+document.getElementById('d'+S.dur).className='dur-btn act';
+document.getElementById('meta-inp').value=S.meta||'';
+setFilter(S.filter);
+setInterval(updateDate,60000);
+</script>
+</body>
+</html>

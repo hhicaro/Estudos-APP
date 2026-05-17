@@ -1,0 +1,37 @@
+[
+  { "id": "lp_01", "disciplina": "Língua Portuguesa", "nome": "1. Compreensão e Interpretação de Textos", "relevancia": 3, "peso": 1 },
+  { "id": "lp_02", "disciplina": "Língua Portuguesa", "nome": "2. Tipos e Gêneros Textuais", "relevancia": 2, "peso": 1 },
+  { "id": "lp_03", "disciplina": "Língua Portuguesa", "nome": "3. Ortografia Oficial", "relevancia": 3, "peso": 1 },
+  { "id": "lp_04", "disciplina": "Língua Portuguesa", "nome": "4. Coesão Textual (referenciação, conectores, tempos verbais)", "relevancia": 4, "peso": 1 },
+  { "id": "lp_05", "disciplina": "Língua Portuguesa", "nome": "5.1 Classes de Palavras", "relevancia": 3, "peso": 1 },
+  { "id": "lp_06", "disciplina": "Língua Portuguesa", "nome": "5.2/5.3 Coordenação e Subordinação", "relevancia": 4, "peso": 1 },
+  { "id": "lp_07", "disciplina": "Língua Portuguesa", "nome": "5.4 Pontuação", "relevancia": 4, "peso": 1 },
+  { "id": "lp_08", "disciplina": "Língua Portuguesa", "nome": "5.5/5.6 Concordância e Regência", "relevancia": 4, "peso": 1 },
+  { "id": "lp_09", "disciplina": "Língua Portuguesa", "nome": "5.7 Crase", "relevancia": 4, "peso": 1 },
+  { "id": "lp_10", "disciplina": "Língua Portuguesa", "nome": "5.8 Colocação Pronominal", "relevancia": 3, "peso": 1 },
+  { "id": "lp_11", "disciplina": "Língua Portuguesa", "nome": "6. Reescrita, Significação e Reorganização", "relevancia": 5, "peso": 1 },
+
+  { "id": "df_01", "disciplina": "Conhecimentos do DF e Legislação", "nome": "1. Realidade DF/RIDE (étnica, social, histórica, geográfica, econômica)", "relevancia": 2, "peso": 2 },
+  { "id": "df_02", "disciplina": "Conhecimentos do DF e Legislação", "nome": "2. Plano Distrital de Política para Mulheres (PDPM)", "relevancia": 3, "peso": 2 },
+  { "id": "df_03", "disciplina": "Conhecimentos do DF e Legislação", "nome": "3. Lei Orgânica do DF — Título VI", "relevancia": 3, "peso": 2 },
+  { "id": "df_04", "disciplina": "Conhecimentos do DF e Legislação", "nome": "4. LC 840/2011 (Estatuto Servidores DF) — Tít. I, V, VI, VII", "relevancia": 3, "peso": 2 },
+  { "id": "df_05", "disciplina": "Conhecimentos do DF e Legislação", "nome": "5. Lei 11.340/2006 (Maria da Penha) — mín. 3 questões garantidas", "relevancia": 5, "peso": 2 },
+  { "id": "df_06", "disciplina": "Conhecimentos do DF e Legislação", "nome": "6. Lei Distrital 7.484/2024", "relevancia": 4, "peso": 2 },
+  { "id": "df_07", "disciplina": "Conhecimentos do DF e Legislação", "nome": "7. Noções de Primeiros Socorros", "relevancia": 2, "peso": 2 },
+
+  { "id": "suas_01", "disciplina": "Fundamentos do SUAS", "nome": "1. PNAS/2004 e Organização da Assistência Social", "relevancia": 5, "peso": 3 },
+  { "id": "suas_02", "disciplina": "Fundamentos do SUAS", "nome": "2. SUAS: Princípios, Diretrizes e Seguranças (acolhida, convívio, renda, autonomia)", "relevancia": 5, "peso": 3 },
+  { "id": "suas_03", "disciplina": "Fundamentos do SUAS", "nome": "3. NOB/SUAS (2012): Responsabilidades e Cofinanciamento", "relevancia": 4, "peso": 3 },
+
+  { "id": "prog_01", "disciplina": "Programas Socioassistenciais DF", "nome": "1. Cartão Prato Cheio (Lei 7.009/2021)", "relevancia": 4, "peso": 3 },
+  { "id": "prog_02", "disciplina": "Programas Socioassistenciais DF", "nome": "2. Programa Cartão Gás (Lei 6.938/2021)", "relevancia": 3, "peso": 3 },
+  { "id": "prog_03", "disciplina": "Programas Socioassistenciais DF", "nome": "3. Plano DF Social (Lei 7.008/2021)", "relevancia": 4, "peso": 3 },
+  { "id": "prog_04", "disciplina": "Programas Socioassistenciais DF", "nome": "4. Benefícios Eventuais (Lei 5.165/2013)", "relevancia": 5, "peso": 3 },
+  { "id": "prog_05", "disciplina": "Programas Socioassistenciais DF", "nome": "5. SISAN / Restaurante Comunitário", "relevancia": 3, "peso": 3 },
+
+  { "id": "ag_01", "disciplina": "Específicos Agente Social", "nome": "1. Rede Socioassistencial e Trabalho no Território (CRAS, CREAS, Acolhimento)", "relevancia": 5, "peso": 3 },
+  { "id": "ag_02", "disciplina": "Específicos Agente Social", "nome": "2. Proteção Social Básica e Trabalho com Famílias (PAIF, SCFV)", "relevancia": 5, "peso": 3 },
+  { "id": "ag_03", "disciplina": "Específicos Agente Social", "nome": "3. Proteção Social Especial (Média e Alta Complexidade)", "relevancia": 5, "peso": 3 },
+  { "id": "ag_04", "disciplina": "Específicos Agente Social", "nome": "4. Abordagem Social e População em Situação de Rua (Dec. 7.053/2009)", "relevancia": 4, "peso": 3 },
+  { "id": "ag_05", "disciplina": "Específicos Agente Social", "nome": "5. Saúde Mental, Álcool e Outras Drogas (Redução de Danos)", "relevancia": 5, "peso": 3 }
+]
