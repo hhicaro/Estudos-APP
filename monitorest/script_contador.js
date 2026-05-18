@@ -59,28 +59,57 @@ const DEFAULT_SYLLABUS = [
     { id: 'aud_03', disciplina: 'Auditoria Contábil e Governamental', nome: "3. Papéis de Trabalho, Pareceres e Relatórios", relevancia: 4, peso: 3 },
     { id: 'aud_04', disciplina: 'Auditoria Contábil e Governamental', nome: "4. Auditoria por Ciclos (receitas, compras, caixa, ativos)", relevancia: 3, peso: 3 },
 ];
-// --- PRÉ-CALIBRAÇÃO FSRS baseada em horas estudadas ---
-// Tópicos sem entrada aqui iniciam como NOVOS (state=0, reps=0)
+// --- PRÉ-CALIBRAÇÃO FSRS v2 — baseada em histórico TecConcursos (ago/2025–mai/2026) ---
+// Gerado automaticamente em 2026-05-17 | ~2.700 questões analisadas
+// difficulty: 1 (dominado) → 10 (crítico) | stability: dias até próx. revisão
 const SEED_STATES = {
-    cg_01: {"difficulty": 3.8, "stability": 12, "reps": 2, "lapses": 0, "state": 2, "last_review": "2026-05-16", "scheduled_days": 12, "elapsed_days": 0, "data_proxima_revisao": "2026-05-28", "history": []},
-    cg_02: {"difficulty": 3.5, "stability": 14, "reps": 2, "lapses": 0, "state": 2, "last_review": "2026-05-16", "scheduled_days": 14, "elapsed_days": 0, "data_proxima_revisao": "2026-05-30", "history": []},
-    cg_03: {"difficulty": 3.5, "stability": 14, "reps": 2, "lapses": 0, "state": 2, "last_review": "2026-05-16", "scheduled_days": 14, "elapsed_days": 0, "data_proxima_revisao": "2026-05-30", "history": []},
-    cg_04: {"difficulty": 4.0, "stability": 10, "reps": 2, "lapses": 0, "state": 2, "last_review": "2026-05-16", "scheduled_days": 10, "elapsed_days": 0, "data_proxima_revisao": "2026-05-26", "history": []},
-    casp_01: {"difficulty": 5.0, "stability": 6, "reps": 1, "lapses": 0, "state": 2, "last_review": "2026-05-16", "scheduled_days": 6, "elapsed_days": 0, "data_proxima_revisao": "2026-05-22", "history": []},
-    casp_02: {"difficulty": 4.5, "stability": 9, "reps": 2, "lapses": 0, "state": 2, "last_review": "2026-05-16", "scheduled_days": 9, "elapsed_days": 0, "data_proxima_revisao": "2026-05-25", "history": []},
-    casp_03: {"difficulty": 5.0, "stability": 7, "reps": 1, "lapses": 0, "state": 2, "last_review": "2026-05-16", "scheduled_days": 7, "elapsed_days": 0, "data_proxima_revisao": "2026-05-23", "history": []},
-    casp_04: {"difficulty": 5.0, "stability": 7, "reps": 1, "lapses": 0, "state": 2, "last_review": "2026-05-16", "scheduled_days": 7, "elapsed_days": 0, "data_proxima_revisao": "2026-05-23", "history": []},
-    casp_05: {"difficulty": 5.5, "stability": 6, "reps": 1, "lapses": 0, "state": 2, "last_review": "2026-05-16", "scheduled_days": 6, "elapsed_days": 0, "data_proxima_revisao": "2026-05-22", "history": []},
-    casp_06: {"difficulty": 4.5, "stability": 9, "reps": 2, "lapses": 0, "state": 2, "last_review": "2026-05-16", "scheduled_days": 9, "elapsed_days": 0, "data_proxima_revisao": "2026-05-25", "history": []},
-    aud_01: {"difficulty": 4.0, "stability": 10, "reps": 2, "lapses": 0, "state": 2, "last_review": "2026-05-16", "scheduled_days": 10, "elapsed_days": 0, "data_proxima_revisao": "2026-05-26", "history": []},
-    aud_02: {"difficulty": 4.0, "stability": 10, "reps": 2, "lapses": 0, "state": 2, "last_review": "2026-05-16", "scheduled_days": 10, "elapsed_days": 0, "data_proxima_revisao": "2026-05-26", "history": []},
-    aud_03: {"difficulty": 4.0, "stability": 10, "reps": 2, "lapses": 0, "state": 2, "last_review": "2026-05-16", "scheduled_days": 10, "elapsed_days": 0, "data_proxima_revisao": "2026-05-26", "history": []},
-    aud_04: {"difficulty": 4.5, "stability": 8, "reps": 1, "lapses": 0, "state": 2, "last_review": "2026-05-16", "scheduled_days": 8, "elapsed_days": 0, "data_proxima_revisao": "2026-05-24", "history": []},
-    afo_01: {"difficulty": 6.0, "stability": 5, "reps": 1, "lapses": 1, "state": 2, "last_review": "2026-05-11", "scheduled_days": 5, "elapsed_days": 5, "data_proxima_revisao": "2026-05-16", "history": []},
-    afo_02: {"difficulty": 6.0, "stability": 5, "reps": 1, "lapses": 1, "state": 2, "last_review": "2026-05-11", "scheduled_days": 5, "elapsed_days": 5, "data_proxima_revisao": "2026-05-16", "history": []},
-    afo_03: {"difficulty": 6.5, "stability": 4, "reps": 1, "lapses": 1, "state": 2, "last_review": "2026-05-12", "scheduled_days": 4, "elapsed_days": 4, "data_proxima_revisao": "2026-05-16", "history": []},
-    afo_04: {"difficulty": 7.0, "stability": 3, "reps": 1, "lapses": 2, "state": 2, "last_review": "2026-05-13", "scheduled_days": 3, "elapsed_days": 3, "data_proxima_revisao": "2026-05-16", "history": []},
-    df_04: {"difficulty": 4.5, "stability": 7, "reps": 1, "lapses": 0, "state": 2, "last_review": "2026-05-16", "scheduled_days": 7, "elapsed_days": 0, "data_proxima_revisao": "2026-05-23", "history": []},
+    // === LÍNGUA PORTUGUESA (17q | 65% global) ===
+    lp_01: {"difficulty": 5.0, "stability": 8, "reps": 2, "lapses": 0, "state": 2, "last_review": "2026-05-17", "scheduled_days": 8, "elapsed_days": 0, "data_proxima_revisao": "2026-05-25", "history": []},
+    lp_02: {"difficulty": 5.0, "stability": 8, "reps": 2, "lapses": 0, "state": 2, "last_review": "2026-05-17", "scheduled_days": 8, "elapsed_days": 0, "data_proxima_revisao": "2026-05-25", "history": []},
+    lp_03: {"difficulty": 4.5, "stability": 9, "reps": 2, "lapses": 0, "state": 2, "last_review": "2026-05-17", "scheduled_days": 9, "elapsed_days": 0, "data_proxima_revisao": "2026-05-26", "history": []},
+    lp_04: {"difficulty": 5.0, "stability": 8, "reps": 2, "lapses": 0, "state": 2, "last_review": "2026-05-17", "scheduled_days": 8, "elapsed_days": 0, "data_proxima_revisao": "2026-05-25", "history": []},
+    lp_05: {"difficulty": 5.0, "stability": 8, "reps": 2, "lapses": 0, "state": 2, "last_review": "2026-05-17", "scheduled_days": 8, "elapsed_days": 0, "data_proxima_revisao": "2026-05-25", "history": []},
+    lp_06: {"difficulty": 5.0, "stability": 8, "reps": 2, "lapses": 0, "state": 2, "last_review": "2026-05-17", "scheduled_days": 8, "elapsed_days": 0, "data_proxima_revisao": "2026-05-25", "history": []},
+    lp_07: {"difficulty": 5.0, "stability": 8, "reps": 2, "lapses": 0, "state": 2, "last_review": "2026-05-17", "scheduled_days": 8, "elapsed_days": 0, "data_proxima_revisao": "2026-05-25", "history": []},
+    lp_08: {"difficulty": 5.0, "stability": 8, "reps": 2, "lapses": 0, "state": 2, "last_review": "2026-05-17", "scheduled_days": 8, "elapsed_days": 0, "data_proxima_revisao": "2026-05-25", "history": []},
+    lp_09: {"difficulty": 5.0, "stability": 8, "reps": 2, "lapses": 0, "state": 2, "last_review": "2026-05-17", "scheduled_days": 8, "elapsed_days": 0, "data_proxima_revisao": "2026-05-25", "history": []},
+    lp_10: {"difficulty": 5.0, "stability": 8, "reps": 2, "lapses": 0, "state": 2, "last_review": "2026-05-17", "scheduled_days": 8, "elapsed_days": 0, "data_proxima_revisao": "2026-05-25", "history": []},
+    lp_11: {"difficulty": 5.5, "stability": 7, "reps": 2, "lapses": 1, "state": 2, "last_review": "2026-05-17", "scheduled_days": 7, "elapsed_days": 0, "data_proxima_revisao": "2026-05-24", "history": []},
+    // === CONHECIMENTOS DO DF E LEGISLAÇÃO ===
+    df_01: {"difficulty": 5.0, "stability": 8, "reps": 2, "lapses": 0, "state": 2, "last_review": "2026-05-17", "scheduled_days": 8, "elapsed_days": 0, "data_proxima_revisao": "2026-05-25", "history": []},
+    df_02: {"difficulty": 5.0, "stability": 8, "reps": 2, "lapses": 0, "state": 2, "last_review": "2026-05-17", "scheduled_days": 8, "elapsed_days": 0, "data_proxima_revisao": "2026-05-25", "history": []},
+    df_03: {"difficulty": 5.0, "stability": 8, "reps": 2, "lapses": 0, "state": 2, "last_review": "2026-05-17", "scheduled_days": 8, "elapsed_days": 0, "data_proxima_revisao": "2026-05-25", "history": []},
+    df_04: {"difficulty": 4.5, "stability": 9, "reps": 2, "lapses": 0, "state": 2, "last_review": "2026-05-17", "scheduled_days": 9, "elapsed_days": 0, "data_proxima_revisao": "2026-05-26", "history": []},
+    df_05: {"difficulty": 5.0, "stability": 8, "reps": 2, "lapses": 0, "state": 2, "last_review": "2026-05-17", "scheduled_days": 8, "elapsed_days": 0, "data_proxima_revisao": "2026-05-25", "history": []},
+    df_06: {"difficulty": 5.5, "stability": 7, "reps": 2, "lapses": 0, "state": 2, "last_review": "2026-05-17", "scheduled_days": 7, "elapsed_days": 0, "data_proxima_revisao": "2026-05-24", "history": []},
+    df_07: {"difficulty": 5.0, "stability": 8, "reps": 2, "lapses": 0, "state": 2, "last_review": "2026-05-17", "scheduled_days": 8, "elapsed_days": 0, "data_proxima_revisao": "2026-05-25", "history": []},
+    // === CONTABILIDADE GERAL E SOCIETÁRIA (466q | 64%) ===
+    cg_01: {"difficulty": 4.5, "stability": 11, "reps": 2, "lapses": 0, "state": 2, "last_review": "2026-05-17", "scheduled_days": 11, "elapsed_days": 0, "data_proxima_revisao": "2026-05-28", "history": []},
+    cg_02: {"difficulty": 6.0, "stability": 7,  "reps": 3, "lapses": 1, "state": 2, "last_review": "2026-05-17", "scheduled_days": 7,  "elapsed_days": 0, "data_proxima_revisao": "2026-05-24", "history": []},
+    cg_03: {"difficulty": 7.5, "stability": 5,  "reps": 5, "lapses": 3, "state": 2, "last_review": "2026-05-17", "scheduled_days": 5,  "elapsed_days": 0, "data_proxima_revisao": "2026-05-22", "history": []},
+    cg_04: {"difficulty": 6.5, "stability": 6,  "reps": 4, "lapses": 2, "state": 2, "last_review": "2026-05-17", "scheduled_days": 6,  "elapsed_days": 0, "data_proxima_revisao": "2026-05-23", "history": []},
+    // === ADM. FINANCEIRA E ANÁLISE DE BALANÇOS (dados insuficientes) ===
+    afab_01: {"difficulty": 5.0, "stability": 8, "reps": 2, "lapses": 0, "state": 2, "last_review": "2026-05-17", "scheduled_days": 8, "elapsed_days": 0, "data_proxima_revisao": "2026-05-25", "history": []},
+    afab_02: {"difficulty": 5.0, "stability": 8, "reps": 2, "lapses": 0, "state": 2, "last_review": "2026-05-17", "scheduled_days": 8, "elapsed_days": 0, "data_proxima_revisao": "2026-05-25", "history": []},
+    afab_03: {"difficulty": 5.0, "stability": 8, "reps": 2, "lapses": 0, "state": 2, "last_review": "2026-05-17", "scheduled_days": 8, "elapsed_days": 0, "data_proxima_revisao": "2026-05-25", "history": []},
+    afab_04: {"difficulty": 5.5, "stability": 7, "reps": 2, "lapses": 0, "state": 2, "last_review": "2026-05-17", "scheduled_days": 7, "elapsed_days": 0, "data_proxima_revisao": "2026-05-24", "history": []},
+    // === CASP (752q | 67% | sub-tópicos AFO/Contab Pública) ===
+    casp_01: {"difficulty": 5.5, "stability": 8,  "reps": 3, "lapses": 1, "state": 2, "last_review": "2026-05-17", "scheduled_days": 8,  "elapsed_days": 0, "data_proxima_revisao": "2026-05-25", "history": []},
+    casp_02: {"difficulty": 7.0, "stability": 5,  "reps": 5, "lapses": 3, "state": 2, "last_review": "2026-05-17", "scheduled_days": 5,  "elapsed_days": 0, "data_proxima_revisao": "2026-05-22", "history": []},
+    casp_03: {"difficulty": 4.5, "stability": 11, "reps": 2, "lapses": 0, "state": 2, "last_review": "2026-05-17", "scheduled_days": 11, "elapsed_days": 0, "data_proxima_revisao": "2026-05-28", "history": []},
+    casp_04: {"difficulty": 7.0, "stability": 5,  "reps": 4, "lapses": 2, "state": 2, "last_review": "2026-05-17", "scheduled_days": 5,  "elapsed_days": 0, "data_proxima_revisao": "2026-05-22", "history": []},
+    casp_05: {"difficulty": 5.5, "stability": 8,  "reps": 3, "lapses": 1, "state": 2, "last_review": "2026-05-17", "scheduled_days": 8,  "elapsed_days": 0, "data_proxima_revisao": "2026-05-25", "history": []},
+    casp_06: {"difficulty": 5.5, "stability": 8,  "reps": 3, "lapses": 1, "state": 2, "last_review": "2026-05-17", "scheduled_days": 8,  "elapsed_days": 0, "data_proxima_revisao": "2026-05-25", "history": []},
+    // === ORÇAMENTO PÚBLICO E AFO (752q | 67% | LRF: 62%) ===
+    afo_01: {"difficulty": 4.0, "stability": 12, "reps": 2, "lapses": 0, "state": 2, "last_review": "2026-05-17", "scheduled_days": 12, "elapsed_days": 0, "data_proxima_revisao": "2026-05-29", "history": []},
+    afo_02: {"difficulty": 6.0, "stability": 7,  "reps": 4, "lapses": 2, "state": 2, "last_review": "2026-05-17", "scheduled_days": 7,  "elapsed_days": 0, "data_proxima_revisao": "2026-05-24", "history": []},
+    afo_03: {"difficulty": 5.0, "stability": 9,  "reps": 3, "lapses": 1, "state": 2, "last_review": "2026-05-17", "scheduled_days": 9,  "elapsed_days": 0, "data_proxima_revisao": "2026-05-26", "history": []},
+    afo_04: {"difficulty": 5.0, "stability": 9,  "reps": 3, "lapses": 1, "state": 2, "last_review": "2026-05-17", "scheduled_days": 9,  "elapsed_days": 0, "data_proxima_revisao": "2026-05-26", "history": []},
+    // === AUDITORIA CONTÁBIL E GOVERNAMENTAL ===
+    aud_01: {"difficulty": 3.5, "stability": 14, "reps": 2, "lapses": 0, "state": 2, "last_review": "2026-05-17", "scheduled_days": 14, "elapsed_days": 0, "data_proxima_revisao": "2026-05-31", "history": []},
+    aud_02: {"difficulty": 6.5, "stability": 6,  "reps": 4, "lapses": 2, "state": 2, "last_review": "2026-05-17", "scheduled_days": 6,  "elapsed_days": 0, "data_proxima_revisao": "2026-05-23", "history": []},
+    aud_03: {"difficulty": 8.5, "stability": 4,  "reps": 5, "lapses": 3, "state": 2, "last_review": "2026-05-17", "scheduled_days": 4,  "elapsed_days": 0, "data_proxima_revisao": "2026-05-21", "history": []},
+    aud_04: {"difficulty": 8.5, "stability": 4,  "reps": 5, "lapses": 3, "state": 2, "last_review": "2026-05-17", "scheduled_days": 4,  "elapsed_days": 0, "data_proxima_revisao": "2026-05-21", "history": []},
 };
 
 // --- MODO RETA FINAL (Filtra topicos com relevancia < 3) ---

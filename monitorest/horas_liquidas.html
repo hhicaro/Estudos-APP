@@ -356,6 +356,44 @@ const PROVA_DATE='2026-09-06';
 let S={subjects:[],todayMin:0,totalMin:0,todayPomos:0,totalSessions:0,history:[],dur:25,meta:0,filter:'all'};
 let running=false,isBreak=false,secs=25*60,timer=null,sessStart=null;
 
+// === BASELINE: 47h48 estudadas no tracker anterior (hhicaro.github.io/horas-liquidas) ===
+// Aplicado uma única vez (flag baselineV1Loaded). Mapeia matérias antigas → matérias do edital SEDES.
+const BASELINE_HORAS = {
+  // Matérias que existem no SEDES (mapeamento direto, minutos)
+  mapeadas: {
+    'Contabilidade Geral e Societária': 899,        // ex-"Cont. Geral" 14h59
+    'CASP — Contabilidade Setor Público': 221,       // ex-"Cont. Pública" 3h41
+    'LC 840/2011 (Estatuto)': 204,                   // ex-"Lei 840/2011" 3h24
+    'Auditoria Contábil e Governamental': 186,       // ex-"Auditoria" 3h06
+    'Orçamento Público e AFO': 236                   // ex-"Adm. financeira orçamentária" 2h08 + "LRF" 1h34 + "Orçamento" 0h14
+  },
+  // Matérias que NÃO estão no edital SEDES (eram do CFBm/Bombeiros) — viram extras com tag
+  extras: [
+    {name:'Raciocínio Lógico (concurso anterior)', min:422, grupo:'comum'},
+    {name:'Direito Constitucional (concurso anterior)', min:363, grupo:'comum'},
+    {name:'Direito Administrativo (concurso anterior)', min:258, grupo:'comum'},
+    {name:'Tributário (concurso anterior)', min:79, grupo:'comum'}
+  ],
+  totalSessoes: 6
+};
+
+function aplicarBaselineHistorico(){
+  let aplicadas = 0;
+  Object.entries(BASELINE_HORAS.mapeadas).forEach(([nome, mins])=>{
+    const sub = S.subjects.find(s=>s.name===nome);
+    if (sub) { sub.min += mins; aplicadas++; }
+  });
+  BASELINE_HORAS.extras.forEach(e=>{
+    if (!S.subjects.find(s=>s.name===e.name)) {
+      S.subjects.push({...e});
+      aplicadas++;
+    }
+  });
+  S.totalMin = S.subjects.reduce((sum,s)=>sum+s.min,0);
+  S.totalSessions = (S.totalSessions||0) + BASELINE_HORAS.totalSessoes;
+  console.log(`[Baseline] Aplicadas ${aplicadas} matérias com histórico do tracker anterior. Total: ${S.totalMin}min (${Math.floor(S.totalMin/60)}h${String(S.totalMin%60).padStart(2,'0')}).`);
+}
+
 function load(){
   try{
     const raw=localStorage.getItem(STORAGE_KEY);
@@ -375,6 +413,12 @@ function load(){
   S.dur=Number(S.dur)||25;
   if(!Array.isArray(S.history))S.history=[];
   if(!S.filter)S.filter='all';
+  // === Aplica baseline uma única vez (one-time migration) ===
+  if (!S.baselineV1Loaded) {
+    aplicarBaselineHistorico();
+    S.baselineV1Loaded = true;
+    save();
+  }
   secs=S.dur*60;
   const mi=document.getElementById('meta-inp');if(mi&&S.meta)mi.value=S.meta;
 }
