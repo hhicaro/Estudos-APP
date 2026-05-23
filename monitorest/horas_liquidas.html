@@ -354,7 +354,7 @@ const STORAGE_KEY='hl_sedes_df_2026';
 const PROVA_DATE='2026-09-06';
 
 let S={subjects:[],todayMin:0,totalMin:0,todayPomos:0,totalSessions:0,history:[],dur:25,meta:0,filter:'all'};
-let running=false,isBreak=false,secs=25*60,timer=null,sessStart=null;
+let running=false,isBreak=false,secs=25*60,timer=null,sessStart=null,phaseStart=null;
 
 // === BASELINE: 47h48 estudadas no tracker anterior (hhicaro.github.io/horas-liquidas) ===
 // Aplicado uma única vez (flag baselineV1Loaded). Mapeia matérias antigas → matérias do edital SEDES.
@@ -524,51 +524,85 @@ function renderDashboard(){
   ).join('');
 }
 
-function record(mins){
+// === Timer: funções refatoradas (v2) ===
+// Bug 1 fix: completePomodoro() cuida do contador — separado do recordTime()
+// Bug 2 fix: addToHistory() chamado diretamente ao completar sessão ou pausar ≥5min
+// Bug 3 fix: tick() usa Date.now() como fonte de verdade — imune a throttling em aba minimizada
+
+function recordTime(mins){
+  // Só registra minutos estudados (sem contar pomodoro nem histórico)
   if(mins<=0)return;
   const i=parseInt(document.getElementById('cur-subj').value)||0;
-  const name=S.subjects[i]?S.subjects[i].name:'Geral';
+  if(!S.subjects[i])return;
   S.subjects[i].min+=mins;S.todayMin+=mins;S.totalMin+=mins;
-  if(mins>=S.dur){
-    S.todayPomos++;S.totalSessions++;
-    const t=new Date();
-    S.history.push({subj:name,dur:mins,time:t.toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit'})});
-    if(S.history.length>100)S.history=S.history.slice(-100);
-  }
-  save();renderStats();renderSubjects();renderHistory();
+  save();renderStats();renderSubjects();
+}
+
+function addToHistory(name,mins){
+  if(mins<=0)return;
+  const t=new Date();
+  S.history.push({subj:name,dur:mins,time:t.toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit'})});
+  if(S.history.length>100)S.history=S.history.slice(-100);
+  renderHistory();
+}
+
+function completePomodoro(name){
+  // Chamado apenas quando um ciclo focus completo termina
+  S.todayPomos++;S.totalSessions++;
+  addToHistory(name,S.dur);
+  save();renderStats();
 }
 
 function toggleTimer(){
   if(running){
     clearInterval(timer);running=false;
     if(sessStart&&!isBreak){
-      const e=Math.floor((Date.now()-sessStart)/1000);
-      const m=e>=30?Math.max(1,Math.round(e/60)):0;
-      if(m>0)record(m);
+      const elapsedMin=Math.round((Date.now()-sessStart)/60000);
+      const toRecord=elapsedMin-(S._lastRecMin||0);
+      if(toRecord>0)recordTime(toRecord);
+      // Registra no histórico se estudou ≥5 min (sessão interrompida)
+      if(elapsedMin>=5){
+        const i=parseInt(document.getElementById('cur-subj').value)||0;
+        const name=S.subjects[i]?S.subjects[i].name:'Geral';
+        addToHistory(name,elapsedMin);
+        S.totalSessions++;save();
+      }
     }
-    sessStart=null;
+    sessStart=null;phaseStart=null;S._lastRecMin=0;
   }else{
-    running=true;sessStart=Date.now();S._lastRecMin=0;
+    running=true;sessStart=Date.now();phaseStart=Date.now();S._lastRecMin=0;
     timer=setInterval(tick,1000);
   }
   renderClock();
 }
 
 function tick(){
-  secs--;
+  // Recalcula secs a partir do relógio de parede — nunca drifta em aba minimizada
+  if(phaseStart){
+    const phaseDurSec=(isBreak?5:S.dur)*60;
+    secs=Math.max(0,Math.round(phaseDurSec-(Date.now()-phaseStart)/1000));
+  }
+  // Registra tempo por minuto só durante o foco
   if(!isBreak&&sessStart){
-    const elapsed=Math.floor((Date.now()-sessStart)/60000);
-    if(elapsed>0&&elapsed>S._lastRecMin){record(1);S._lastRecMin=elapsed;}
+    const elapsedMin=Math.floor((Date.now()-sessStart)/60000);
+    const toRecord=elapsedMin-(S._lastRecMin||0);
+    if(toRecord>0){recordTime(toRecord);S._lastRecMin=elapsedMin;}
   }
   if(secs<=0){
     clearInterval(timer);running=false;
     if(!isBreak){
-      const rem=S.dur-(S._lastRecMin||0);
-      if(rem>0)record(rem);
+      // Registra tempo residual do último minuto
+      const elapsedMin=Math.round((Date.now()-sessStart)/60000);
+      const toRecord=elapsedMin-(S._lastRecMin||0);
+      if(toRecord>0)recordTime(toRecord);
+      // Completa o pomodoro (incrementa contador + histórico)
+      const i=parseInt(document.getElementById('cur-subj').value)||0;
+      const name=S.subjects[i]?S.subjects[i].name:'Geral';
+      completePomodoro(name);
       S._lastRecMin=0;sessStart=null;
-      isBreak=true;secs=5*60;
-      setTimeout(()=>{running=true;sessStart=Date.now();S._lastRecMin=0;timer=setInterval(tick,1000);renderClock();},500);
-    }else{isBreak=false;secs=S.dur*60;sessStart=null;S._lastRecMin=0;}
+      isBreak=true;secs=5*60;phaseStart=Date.now();
+      setTimeout(()=>{running=true;timer=setInterval(tick,1000);renderClock();},500);
+    }else{isBreak=false;secs=S.dur*60;sessStart=null;phaseStart=null;S._lastRecMin=0;}
   }
   renderClock();
 }
@@ -576,14 +610,15 @@ function tick(){
 function skipPhase(){
   clearInterval(timer);
   if(running&&sessStart&&!isBreak){
-    const rem=Math.floor((Date.now()-sessStart)/60000)-(S._lastRecMin||0);
-    if(rem>0)record(rem);
+    const elapsedMin=Math.floor((Date.now()-sessStart)/60000);
+    const toRecord=elapsedMin-(S._lastRecMin||0);
+    if(toRecord>0)recordTime(toRecord);
   }
-  S._lastRecMin=0;running=false;sessStart=null;
+  S._lastRecMin=0;running=false;sessStart=null;phaseStart=null;
   isBreak=!isBreak;secs=(isBreak?5:S.dur)*60;renderClock();
 }
 
-function resetTimer(){clearInterval(timer);running=false;isBreak=false;sessStart=null;S._lastRecMin=0;secs=S.dur*60;renderClock();}
+function resetTimer(){clearInterval(timer);running=false;isBreak=false;sessStart=null;phaseStart=null;S._lastRecMin=0;secs=S.dur*60;renderClock();}
 
 function setDur(d){
   if(running)return;
@@ -689,6 +724,15 @@ document.getElementById('d'+S.dur).className='dur-btn act';
 document.getElementById('meta-inp').value=S.meta||'';
 setFilter(S.filter);
 setInterval(updateDate,60000);
+
+// Recalcula o timer imediatamente ao voltar para a aba (evita exibir valor defasado)
+document.addEventListener('visibilitychange',()=>{
+  if(!document.hidden&&running&&phaseStart){
+    const phaseDurSec=(isBreak?5:S.dur)*60;
+    secs=Math.max(0,Math.round(phaseDurSec-(Date.now()-phaseStart)/1000));
+    renderClock();
+  }
+});
 </script>
 </body>
 </html>
